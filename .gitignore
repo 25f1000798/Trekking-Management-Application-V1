@@ -1,0 +1,6 @@
+.env
+venv/
+# we do not add virtual environment to github
+
+.vscode/
+.idea/
