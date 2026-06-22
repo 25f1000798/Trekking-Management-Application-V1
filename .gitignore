@@ -1,5 +1,6 @@
 .env
 venv/
+__pycache__/
 # we do not add virtual environment to github
 
 .vscode/
