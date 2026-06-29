@@ -1,0 +1,67 @@
+{% extends "base.html"%}
+{% block extra_css%}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_index.css') }}">
+{% endblock %}
+{% block title%}Home{% endblock %}
+{% block content %}
+
+<div class="hero">
+    <h1 class="hero-title">
+        Find Your <span class="accent">Path</span> Among The Peaks
+    </h1>
+    {% if not current_user.is_authenticated %}
+    <a href="{{ url_for('visit.register') }}" class="hero-cta">Start Your Journey</a>
+    {% endif %}
+</div>
+
+<section class="stats-strip">
+    <div class="stat-item">
+        <div class="stat-number">{{ stats.treks }}+</div>
+        <div class="stat-label">Trek Routes</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number">{{ stats.users }}+</div>
+        <div class="stat-label">Trekkers</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-number">{{ stats.bookings }}+</div>
+        <div class="stat-label">Expeditions Booked</div>
+    </div>
+</section>
+
+<section class="featured-section">
+    <div class="open">
+        <span class="open-text">---- NOW OPEN ----</span>
+    </div>
+    <h2 class="section-title">Featured Treks</h2>
+    <p class="section-subtitle">Handpicked routes ready for your next adventure</p>
+
+    {% if open_treks %}
+    <div class="trek-grid">
+        {% for trek in open_treks %}
+        <div class="trek-card">
+            <div class="trek-card-img" {% if trek.image_url %}style="background-image:url('{{ trek.image_url }}')"{% endif %}></div>
+            <div class="trek-card-body">
+                <div class="trek-card-icons">
+                    <span>📍 {{ trek.location }}</span>
+                    <span>⏱ {{ format_duration(trek.duration) }}</span>
+                    {% if trek.altitude %}<span>📶 {{ trek.altitude }}</span>{% endif %}
+                </div>
+                <h3>{{ trek.name }}</h3>
+                <p class="trek-card-desc">{{ trek.description[:110] }}{% if trek.description|length > 110 %}…{% endif %}</p>
+                <div class="trek-card-divider"></div>
+                <div class="trek-card-footer">
+                    <span class="trek-card-price">₹{{ "%.0f"|format(trek.price) }}</span>
+                    <span class="trek-card-slots">👥 {{ trek.available }} slots</span>
+                </div>
+                <a href="{{ url_for('visit.trek_detail', trek_id=trek.id) }}" class="trek-card-cta">View &amp; Book →</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="muted">No open treks right now — check back soon!</p>
+    {% endif %}
+
+</section>
+{% endblock %}

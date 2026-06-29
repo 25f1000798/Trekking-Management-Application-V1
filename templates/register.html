@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block extra_css%}
+<link rel="stylesheet" href="../static/css/for_login.css">
+<style>
+    .register-card {
+        width: 40% !important;
+    }
+
+    .auth-register {
+        height: auto;
+        min-height: 100vh;
+        padding: 40px 0;
+        margin-top: 5%;
+    }
+
+    .auth-icon {
+        width: 80px;
+        height: 70px;
+        margin: 0 auto 10px;
+        display: block;
+        border-radius: 8px;
+    }
+
+    .input-row {
+        display: flex;
+        gap: 15px;
+    }
+
+    .input-row .input-group {
+        flex: 1;
+    }
+
+    .role-label {
+        text-align: left;
+        font-size: 0.8rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .role-group {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .role-card {
+        flex: 1;
+        background-color: #f2ede3;
+        border: 1px solid #ddd5c5;
+        border-radius: 10px;
+        padding: 20px 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .role-card:hover {
+        border-color: #2f5d3a;
+    }
+
+    .role-card.selected {
+        background-color: #eef4ee;
+        border-color: #2f5d3a;
+        box-shadow: 0 0 0 1px #2f5d3a;
+    }
+
+    .role-icon {
+        font-size: 1.8rem;
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .role-name {
+        font-weight: 700;
+        margin: 0 0 4px;
+    }
+
+    .role-desc {
+        font-style: italic;
+        font-size: 0.8rem;
+        color: #8a7f6f;
+        margin: 0;
+    }
+
+    /* hides the actual radio input, the styled card acts as the control */
+    .role-card input[type="radio"] {
+        display: none;
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #8a7f6f;
+        font-style: italic;
+        margin: 25px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #ddd5c5;
+    }
+
+    .divider::before {
+        margin-right: 12px;
+    }
+
+    .divider::after {
+        margin-left: 12px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="auth auth-register">
+    <div class="card register-card">
+
+        <img src="../static/assets/logo-removebg-preview.png" alt="" class="auth-icon">
+
+        <h1 class="title">Join SummitQuest</h1>
+        <p class="subtitle">Begin your trekking adventure today</p>
+
+        <form method="post" action="/register">
+            <div class="input-group">
+                <label for="fullname">Full Name</label>
+                <input type="text" id="fullname" placeholder="Your full name" name="user_full_name" required>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" placeholder="Username" name="user_name" required>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" pattern="[0-9]{10}" id="phone" placeholder="Phone number" name="user_contact" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Email address" name="user_email" required>
+            </div>
+
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Min 6 characters" minlength="6" name="user_password" required>
+                </div>
+                <div class="input-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm password" minlength="6" name="user_password_confirm" required>
+                </div>
+            </div>
+
+            <p class="role-label">Register As</p>
+            <div class="role-group">
+                <label class="role-card selected" id="role-trekker">
+                    <input type="radio" name="user_role" value="trekker" checked>
+                    <span class="role-icon">🧗</span>
+                    <p class="role-name">Trekker</p>
+                    <p class="role-desc">Book &amp; explore treks</p>
+                </label>
+                <label class="role-card" id="role-staff">
+                    <input type="radio" name="user_role" value="staff">
+                    <span class="role-icon">🧭</span>
+                    <p class="role-name">Trek Staff</p>
+                    <p class="role-desc">Guide &amp; manage treks</p>
+                </label>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <div class="icon" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                    <img src="../static/assets/person_add.svg" alt="add">Create Account
+                </div>
+            </button>
+        </form>
+
+        <div class="divider">or</div>
+        <p class="signup-text">Already have an account? <a href="/login">Login</a></p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // toggles the "selected" look between the two role cards
+    var roleCards = document.querySelectorAll('.role-card');
+    roleCards.forEach(function (card) {
+        card.addEventListener('click', function () {
+            roleCards.forEach(function (c) { c.classList.remove('selected'); });
+            card.classList.add('selected');
+        });
+    });
+</script>
+{% endblock %}

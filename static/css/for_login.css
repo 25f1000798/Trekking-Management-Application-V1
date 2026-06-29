@@ -1,0 +1,103 @@
+.auth {
+    margin-top: 2%;
+    min-height: 100vh;
+    font-family: 'Playfair Display', serif;
+    background-color: #f2ede3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url(../../static/assets/login-bg.jpg);
+    width: 100vw;
+    height: 90vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    mask-image: linear-gradient(to bottom, rgb(254, 252, 252) 98%, transparent 1%);
+}
+
+.card {
+    background-color: #faf7f1;
+    width: 400px;
+    max-width: 90%;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 25px;
+    }
+
+    .title {
+        font-size: 1.6rem;
+    }
+}
+
+.title {
+    font-size: 2rem;
+    margin: 0 0 5px;
+}
+
+.subtitle {
+    font-style: italic;
+    color: #8a7f6f;
+    margin: 0 0 25px;
+}
+
+.input-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd5c5;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.login-btn {
+    width: 100%;
+    background-color: #2f5d3a;
+    color: white;
+    font-size: 1rem;
+    font-family: 'Playfair Display', serif;
+    border: none;
+    border-radius: 16px;
+    padding: 12px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #387247;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(47, 93, 58, 0.5);
+}
+
+.signup-text {
+    margin-top: 20px;
+}
+
+.signup-text a {
+    color: #2f5d3a;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+input::placeholder {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+}
