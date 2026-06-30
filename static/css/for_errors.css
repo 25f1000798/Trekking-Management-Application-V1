@@ -1,0 +1,28 @@
+.error-page {
+    min-height: 70vh;
+    margin-top: 76px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.error-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.error-page h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    color: #143C2D;
+    margin-bottom: 10px;
+}
+
+.error-page p {
+    color: #6b5d4f;
+    margin-bottom: 28px;
+    max-width: 420px;
+}

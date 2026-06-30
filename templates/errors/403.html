@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_errors.css') }}">
+{% endblock %}
+{% block title %}Access Denied{% endblock %}
+{% block content %}
+<section class="error-page">
+    <span class="error-icon">⛔</span>
+    <h1>403</h1>
+    <p>This trail is restricted — you don't have permission to go further.</p>
+    <a href="{{ url_for('visit.home') }}" class="btn btn-primary">Back to Base Camp</a>
+</section>
+{% endblock %}

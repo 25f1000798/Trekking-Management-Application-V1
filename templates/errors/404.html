@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_errors.css') }}">
+{% endblock %}
+{% block title %}Page Not Found{% endblock %}
+{% block content %}
+<section class="error-page">
+    <span class="error-icon">🧭</span>
+    <h1>404</h1>
+    <p>Looks like this trail doesn't exist. Let's get you back on track.</p>
+    <a href="{{ url_for('visit.home') }}" class="btn btn-primary">Back to Base Camp</a>
+</section>
+{% endblock %}
