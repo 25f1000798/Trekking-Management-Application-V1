@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+
+{{ m.page_header("Admin Dashboard", "Control Center") }}
+
+<div class="page-body">
+
+    {% if pending_staff %}
+    <div class="flash flash-warning" style="margin-bottom: 26px;">
+        {{ pending_staff }} staff registration(s) awaiting approval —
+        <a href="{{ url_for('visit.admin_staff_list') }}">review now</a>.
+    </div>
+    {% endif %}
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-card-number">{{ total_treks }}</div>
+            <div class="stat-card-label">Total Treks</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-number">{{ total_staff }}</div>
+            <div class="stat-card-label">Trek Staff</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-number">{{ total_users }}</div>
+            <div class="stat-card-label">Trekkers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-number">{{ total_bookings }}</div>
+            <div class="stat-card-label">Bookings</div>
+        </div>
+    </div>
+
+    <div class="sq-card">
+        <h2 class="sq-card-title">Quick Actions</h2>
+        <div class="filter-bar">
+            <a href="{{ url_for('visit.admin_new_trek') }}" class="btn btn-primary">+ New Trek</a>
+            <a href="{{ url_for('visit.admin_treks') }}" class="btn btn-outline">Manage Treks</a>
+            <a href="{{ url_for('visit.admin_staff_list') }}" class="btn btn-outline">Manage Staff</a>
+            <a href="{{ url_for('visit.admin_users') }}" class="btn btn-outline">Manage Trekkers</a>
+        </div>
+    </div>
+
+    <div class="sq-card">
+        <h2 class="sq-card-title">Recent Bookings</h2>
+        {% if recent_bookings %}
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Trekker</th><th>Trek</th><th>Participants</th><th>Status</th><th>Booked On</th></tr>
+                </thead>
+                <tbody>
+                    {% for b in recent_bookings %}
+                    <tr>
+                        <td>{{ b.user.full_name }}</td>
+                        <td>{{ b.trek.name }}</td>
+                        <td>{{ b.participants }}</td>
+                        <td>{{ m.badge(b.status, status_color(b.status)) }}</td>
+                        <td class="muted">{{ format_date(b.booked_at) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="muted">No bookings yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

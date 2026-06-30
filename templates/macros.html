@@ -1,0 +1,13 @@
+{% macro page_header(title, subtitle) %}
+<div class="page-header">
+    <div class="page-header-overlay"></div>
+    <div class="page-header-inner">
+        {% if subtitle %}<p class="page-header-eyebrow">{{ subtitle }}</p>{% endif %}
+        <h1 class="page-header-title">{{ title }}</h1>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro badge(text, kind) %}
+<span class="badge badge-{{ kind }}">{{ text }}</span>
+{% endmacro %}

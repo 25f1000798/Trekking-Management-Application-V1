@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}Manage Trekkers{% endblock %}
+{% block content %}
+
+{{ m.page_header("Trekkers", "Admin") }}
+
+<div class="page-body">
+
+    <form method="get" class="filter-bar">
+        <input type="text" name="q" placeholder="Search trekkers by name" value="{{ query }}">
+        <button type="submit" class="btn btn-outline">Search</button>
+    </form>
+
+    <div class="sq-card">
+        {% if users %}
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Name</th><th>Email</th><th>Contact</th><th>Bookings</th><th>Joined</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td>{{ u.full_name }}</td>
+                        <td>{{ u.email }}</td>
+                        <td class="numbers">{{ u.contact or "—" }}</td>
+                        <td>{{ u.bookings|length }}</td>
+                        <td class="muted">{{ format_date(u.created_at) }}</td>
+                        <td>
+                            {% if u.is_blacklisted %}
+                            {{ m.badge("Blacklisted", "danger") }}
+                            {% else %}
+                            {{ m.badge("Active", "success") }}
+                            {% endif %}
+                            <form method="post" action="{{ url_for('visit.admin_blacklist_user', user_id=u.id) }}" style="display:inline">
+                                <button type="submit" class="btn-sm btn-sm-outline">
+                                    {{ "Reinstate" if u.is_blacklisted else "Blacklist" }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="muted">No trekkers found.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

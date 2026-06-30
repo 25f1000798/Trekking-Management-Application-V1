@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}Assign Staff{% endblock %}
+{% block content %}
+
+{{ m.page_header("Assign Staff", trek.name) }}
+
+<div class="page-body">
+    <div class="sq-card" style="max-width: 500px; margin: 0 auto;">
+        <form method="post">
+            <div class="field">
+                <label>Trek Guide</label>
+                <select name="staff_id">
+                    <option value="0">— Unassigned —</option>
+                    {% for s in approved_staff %}
+                    <option value="{{ s.id }}" {% if trek.assigned_staff_id == s.id %}selected{% endif %}>
+                        {{ s.full_name }} ({{ s.email }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save Assignment</button>
+        </form>
+        {% if not approved_staff %}
+        <p class="muted" style="margin-top: 14px;">No approved staff yet — approve some from the Staff page first.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

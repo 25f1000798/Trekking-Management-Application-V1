@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}Manage Staff{% endblock %}
+{% block content %}
+
+{{ m.page_header("Trek Staff", "Admin") }}
+
+<div class="page-body">
+
+    <form method="get" class="filter-bar">
+        <input type="text" name="q" placeholder="Search staff by name" value="{{ query }}">
+        <button type="submit" class="btn btn-outline">Search</button>
+    </form>
+
+    {% set pending = staff|selectattr("is_approved", "equalto", false)|list %}
+    {% set approved = staff|selectattr("is_approved", "equalto", true)|list %}
+
+    {% if pending %}
+    <div class="sq-card">
+        <h2 class="sq-card-title">Pending Approval</h2>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Name</th><th>Email</th><th>Contact</th><th>Registered</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for s in pending %}
+                    <tr>
+                        <td>{{ s.full_name }}</td>
+                        <td>{{ s.email }}</td>
+                        <td>{{ s.contact or "—" }}</td>
+                        <td class="muted">{{ format_date(s.created_at) }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('visit.admin_approve_staff', user_id=s.id) }}" style="display:inline">
+                                <button type="submit" class="btn-sm btn-sm-success">Approve</button>
+                            </form>
+                            <form method="post" action="{{ url_for('visit.admin_reject_staff', user_id=s.id) }}" style="display:inline"
+                                data-confirm="Reject and remove this staff registration?">
+                                <button type="submit" class="btn-sm btn-sm-danger">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="sq-card">
+        <h2 class="sq-card-title">Approved Staff</h2>
+        {% if approved %}
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead><tr><th>Name</th><th>Email</th><th>Contact</th><th>Assigned Treks</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for s in approved %}
+                    <tr>
+                        <td>{{ s.full_name }}</td>
+                        <td>{{ s.email }}</td>
+                        <td>{{ s.contact or "—" }}</td>
+                        <td>{{ s.assigned_treks|length }}</td>
+                        <td>
+                            {% if s.is_blacklisted %}
+                            {{ m.badge("Blacklisted", "danger") }}
+                            {% else %}
+                            {{ m.badge("Active", "success") }}
+                            {% endif %}
+                            <form method="post" action="{{ url_for('visit.admin_blacklist_user', user_id=s.id) }}" style="display:inline">
+                                <button type="submit" class="btn-sm btn-sm-outline">
+                                    {{ "Reinstate" if s.is_blacklisted else "Blacklist" }}
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="muted">No approved staff yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

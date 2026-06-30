@@ -5,7 +5,6 @@ from config import Config
 from app.models import db, User
 from app.utils import current_user, difficulty_color, status_color, format_date, format_duration
 
-
 def create_app():
     app = Flask(__name__, template_folder="../templates", static_folder="../static")
     app.config['SQLALCHEMY_DATABASE_URI'] = Config.DATABASE_URI
@@ -44,5 +43,20 @@ def create_app():
                 os.makedirs(instance_dir, exist_ok=True)
 
         db.create_all()
+        _seed_admin(app)
 
     return app
+
+def _seed_admin(app):
+    if User.query.filter_by(role="admin").first():
+        return
+    admin = User(
+        full_name="System Administrator",
+        name=Config.ADMIN_USERNAME,
+        email=Config.ADMIN_EMAIL,
+        contact=None,
+        role="admin",
+    )
+    admin.set_pass_hash(Config.ADMIN_PASSWORD)
+    db.session.add(admin)
+    db.session.commit()

@@ -129,3 +129,218 @@ def logout():
     session.clear()
     flash("Logged out.", "info")
     return redirect(url_for("visit.home"))
+
+
+# --ADMIN-- routes
+@visit.route("/admin/dashboard")
+@login_required
+@admin_required
+def admin_dashboard():
+    total_treks = Treks.query.count()
+    total_users = User.query.filter_by(role="trekker").count()
+    total_staff = User.query.filter_by(role="staff").count()
+    total_bookings = Bookings.query.count()
+    pending_staff = User.query.filter_by(role="staff", is_approved=False).count()
+    recent_bookings = Bookings.query.order_by(Bookings.booked_at.desc()).limit(5).all()
+
+    trek_stats = db.session.query(Treks.difficulty, db.func.count(Treks.id)).group_by(Treks.difficulty).all()
+    status_stats = db.session.query(Treks.status, db.func.count(Treks.id)).group_by(Treks.status).all()
+
+    return render_template(
+        "admin/dashboard.html", total_treks=total_treks, total_users=total_users,
+        total_staff=total_staff, total_bookings=total_bookings, pending_staff=pending_staff,
+        recent_bookings=recent_bookings, trek_stats=trek_stats, status_stats=status_stats,
+    )
+
+
+@visit.route("/admin/treks")
+@login_required
+@admin_required
+def admin_treks():
+    q = request.args.get("q", "")
+    difficulty = request.args.get("difficulty", "")
+    status = request.args.get("status", "")
+
+    query = Treks.query
+    if q:
+        query = query.filter(db.or_(Treks.name.ilike(f"%{q}%"), Treks.location.ilike(f"%{q}%")))
+    if difficulty:
+        query = query.filter_by(difficulty=difficulty)
+    if status:
+        query = query.filter_by(status=status)
+    treks = query.order_by(Treks.created_at.desc()).all()
+
+    return render_template(
+        "admin/treks.html", treks=treks, query=q, difficulty=difficulty, status=status,
+        difficulties=DIFFICULTIES, statuses=TREK_STATUSES,
+    )
+
+
+def _trek_from_form(trek):
+    f = request.form
+    trek.name = f.get("name", "").strip()
+    trek.location = f.get("location", "").strip()
+    trek.description = f.get("description", "").strip()
+    trek.difficulty = f.get("difficulty", "Easy")
+    trek.capacity = int(f.get("capacity") or 1)
+    trek.available = int(f.get("available") or trek.capacity)
+    trek.price = float(f.get("price") or 0)
+    trek.altitude = f.get("altitude", "").strip()
+    trek.image_url = f.get("image_url", "").strip()
+    trek.highlights = f.get("highlights", "").strip()
+    trek.requirements = f.get("requirements", "").strip()
+    start = f.get("starting_date") or None
+    end = f.get("ending_date") or None
+    trek.starting_date = datetime.strptime(start, "%Y-%m-%d").date() if start else trek.starting_date
+    trek.ending_date = datetime.strptime(end, "%Y-%m-%d").date() if end else trek.ending_date
+    if trek.starting_date and trek.ending_date:
+        delta = (trek.ending_date - trek.starting_date).days + 1
+        trek.duration = max(1, delta)
+
+
+@visit.route("/admin/treks/new", methods=["GET", "POST"])
+@login_required
+@admin_required
+def admin_new_trek():
+    if request.method == "POST":
+        trek = Treks(status="Pending")
+        _trek_from_form(trek)
+        db.session.add(trek)
+        db.session.commit()
+        flash("Trek created!", "success")
+        return redirect(url_for("visit.admin_treks"))
+    return render_template("admin/trek_form.html", trek=None, title="New Trek",
+                            difficulties=DIFFICULTIES)
+
+
+@visit.route("/admin/treks/<int:trek_id>/edit", methods=["GET", "POST"])
+@login_required
+@admin_required
+def admin_edit_trek(trek_id):
+    trek = Treks.query.get_or_404(trek_id)
+    if request.method == "POST":
+        _trek_from_form(trek)
+        db.session.commit()
+        flash("Trek updated!", "success")
+        return redirect(url_for("visit.admin_treks"))
+    return render_template("admin/trek_form.html", trek=trek, title="Edit Trek",
+                            difficulties=DIFFICULTIES)
+
+
+@visit.route("/admin/treks/<int:trek_id>/delete", methods=["POST"])
+@login_required
+@admin_required
+def admin_delete_trek(trek_id):
+    trek = Treks.query.get_or_404(trek_id)
+    db.session.delete(trek)
+    db.session.commit()
+    flash("Trek deleted.", "success")
+    return redirect(url_for("visit.admin_treks"))
+
+
+@visit.route("/admin/treks/<int:trek_id>/approve", methods=["POST"])
+@login_required
+@admin_required
+def admin_approve_trek(trek_id):
+    trek = Treks.query.get_or_404(trek_id)
+    trek.status = "Approved"
+    db.session.commit()
+    flash("Trek approved!", "success")
+    return redirect(url_for("visit.admin_treks"))
+
+
+@visit.route("/admin/treks/<int:trek_id>/setstatus", methods=["POST"])
+@login_required
+@admin_required
+def admin_set_trek_status(trek_id):
+    status = request.form.get("status")
+    if status in TREK_STATUSES:
+        trek = Treks.query.get_or_404(trek_id)
+        trek.status = status
+        if status == "Completed":
+            Bookings.query.filter_by(trek_id=trek.id, status="Booked").update({"status": "Completed"})
+        db.session.commit()
+        flash(f"Status set to {status}.", "success")
+    return redirect(url_for("visit.admin_treks"))
+
+
+@visit.route("/admin/treks/<int:trek_id>/assign", methods=["GET", "POST"])
+@login_required
+@admin_required
+def admin_assign_staff(trek_id):
+    trek = Treks.query.get_or_404(trek_id)
+    if request.method == "POST":
+        staff_id = request.form.get("staff_id")
+        trek.assigned_staff_id = int(staff_id) if staff_id and staff_id != "0" else None
+        db.session.commit()
+        flash("Staff assigned!", "success")
+        return redirect(url_for("visit.admin_treks"))
+    approved_staff = User.query.filter_by(role="staff", is_approved=True, is_blacklisted=False).all()
+    return render_template("admin/assign_staff.html", trek=trek, approved_staff=approved_staff)
+
+
+@visit.route("/admin/staff")
+@login_required
+@admin_required
+def admin_staff_list():
+    q = request.args.get("q", "")
+    query = User.query.filter_by(role="staff")
+    if q:
+        query = query.filter(db.or_(User.name.ilike(f"%{q}%"), User.full_name.ilike(f"%{q}%")))
+    staff = query.order_by(User.created_at.desc()).all()
+    return render_template("admin/staff_list.html", staff=staff, query=q)
+
+
+@visit.route("/admin/staff/<int:user_id>/approve", methods=["POST"])
+@login_required
+@admin_required
+def admin_approve_staff(user_id):
+    staff = User.query.filter_by(id=user_id, role="staff").first_or_404()
+    staff.is_approved = True
+    db.session.commit()
+    flash("Staff approved!", "success")
+    return redirect(url_for("visit.admin_staff_list"))
+
+
+@visit.route("/admin/staff/<int:user_id>/reject", methods=["POST"])
+@login_required
+@admin_required
+def admin_reject_staff(user_id):
+    staff = User.query.filter_by(id=user_id, role="staff").first_or_404()
+    db.session.delete(staff)
+    db.session.commit()
+    flash("Staff registration rejected.", "info")
+    return redirect(url_for("visit.admin_staff_list"))
+
+
+@visit.route("/admin/users")
+@login_required
+@admin_required
+def admin_users():
+    q = request.args.get("q", "")
+    query = User.query.filter_by(role="trekker")
+    if q:
+        query = query.filter(db.or_(User.name.ilike(f"%{q}%"), User.full_name.ilike(f"%{q}%")))
+    users = query.order_by(User.created_at.desc()).all()
+    return render_template("admin/users.html", users=users, query=q)
+
+
+@visit.route("/admin/users/<int:user_id>/blacklist", methods=["POST"])
+@login_required
+@admin_required
+def admin_blacklist_user(user_id):
+    user = User.query.get_or_404(user_id)
+    user.is_blacklisted = not user.is_blacklisted
+    db.session.commit()
+    flash(f"User {'blacklisted' if user.is_blacklisted else 'reinstated'}.", "success")
+    return redirect(request.referrer or url_for("visit.admin_users"))
+
+
+@visit.route("/admin/bookings")
+@login_required
+@admin_required
+def admin_bookings():
+    bookings = Bookings.query.order_by(Bookings.booked_at.desc()).all()
+    return render_template("admin/bookings.html", bookings=bookings)
+
+# basic routes for user and staff dashboard 

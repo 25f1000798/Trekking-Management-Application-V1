@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}All Bookings{% endblock %}
+{% block content %}
+
+{{ m.page_header("All Bookings", "Admin") }}
+
+<div class="page-body">
+    <div class="sq-card">
+        {% if bookings %}
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Trekker</th><th>Trek</th><th>Participants</th><th>Emergency Contact</th><th>Status</th><th>Booked On</th></tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                    <tr>
+                        <td>{{ b.user.full_name }}</td>
+                        <td>{{ b.trek.name }}</td>
+                        <td>{{ b.participants }}</td>
+                        <td>{{ b.emergency_contact }} ({{ b.emergency_phone }})</td>
+                        <td>{{ m.badge(b.status, status_color(b.status)) }}</td>
+                        <td class="muted">{{ format_date(b.booked_at) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="muted">No bookings yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

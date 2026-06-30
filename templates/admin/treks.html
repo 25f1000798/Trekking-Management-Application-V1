@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}Manage Treks{% endblock %}
+{% block content %}
+
+{{ m.page_header("Manage Treks", "Admin") }}
+
+<div class="page-body">
+
+    <div class="page-body-actions">
+        <a href="{{ url_for('visit.admin_new_trek') }}" class="btn btn-primary">+ New Trek</a>
+    </div>
+
+    <form method="get" class="filter-bar">
+        <input type="text" name="q" placeholder="Search by name or location" value="{{ query }}">
+        <select name="difficulty">
+            <option value="">All Difficulties</option>
+            {% for d in difficulties %}
+            <option value="{{ d }}" {% if d == difficulty %}selected{% endif %}>{{ d }}</option>
+            {% endfor %}
+        </select>
+        <select name="status">
+            <option value="">All Statuses</option>
+            {% for s in statuses %}
+            <option value="{{ s }}" {% if s == status %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-outline">Filter</button>
+    </form>
+
+    {% if treks %}
+    <div class="manage-grid">
+        {% for trek in treks %}
+        <div class="manage-card">
+            <div class="manage-card-head">
+                <h3>{{ trek.name }}</h3>
+                {{ m.badge(trek.status, status_color(trek.status)) }}
+            </div>
+            <div class="manage-card-meta">
+                <span>📍 {{ trek.location }}</span>
+                <span>{{ m.badge(trek.difficulty, difficulty_color(trek.difficulty)) }}</span>
+                <span>👥 {{ trek.available }}/{{ trek.capacity }} spots</span>
+                <span>🧭 {{ trek.staff_member.full_name if trek.staff_member else "Unassigned" }}</span>
+            </div>
+
+            <div class="manage-card-actions">
+                <a href="{{ url_for('visit.admin_edit_trek', trek_id=trek.id) }}" class="btn-sm btn-sm-outline">Edit</a>
+                <a href="{{ url_for('visit.admin_assign_staff', trek_id=trek.id) }}" class="btn-sm btn-sm-outline">Assign Staff</a>
+
+                {% if trek.status == 'Pending' %}
+                <form method="post" action="{{ url_for('visit.admin_approve_trek', trek_id=trek.id) }}">
+                    <button type="submit" class="btn-sm btn-sm-success">Approve</button>
+                </form>
+                {% endif %}
+
+                <form method="post" action="{{ url_for('visit.admin_set_trek_status', trek_id=trek.id) }}">
+                    <select name="status" onchange="this.form.submit()" class="btn-sm btn-sm-outline">
+                        <option value="" disabled selected>Set Status</option>
+                        {% for s in statuses %}
+                        <option value="{{ s }}">{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+
+                <form method="post" action="{{ url_for('visit.admin_delete_trek', trek_id=trek.id) }}"
+                    data-confirm="Delete this trek? This cannot be undone.">
+                    <button type="submit" class="btn-sm btn-sm-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🏔</div>
+        <h4>No treks found</h4>
+        <p>Try adjusting your filters, or <a href="{{ url_for('visit.admin_new_trek') }}">create a new trek</a>.</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
