@@ -209,8 +209,7 @@ def admin_new_trek():
         db.session.commit()
         flash("Trek created!", "success")
         return redirect(url_for("visit.admin_treks"))
-    return render_template("admin/trek_form.html", trek=None, title="New Trek",
-                            difficulties=DIFFICULTIES)
+    return render_template("admin/trek_form.html", trek=None, title="New Trek",difficulties=DIFFICULTIES)
 
 
 @visit.route("/admin/treks/<int:trek_id>/edit", methods=["GET", "POST"])
@@ -223,8 +222,7 @@ def admin_edit_trek(trek_id):
         db.session.commit()
         flash("Trek updated!", "success")
         return redirect(url_for("visit.admin_treks"))
-    return render_template("admin/trek_form.html", trek=trek, title="Edit Trek",
-                            difficulties=DIFFICULTIES)
+    return render_template("admin/trek_form.html", trek=trek, title="Edit Trek",difficulties=DIFFICULTIES)
 
 
 @visit.route("/admin/treks/<int:trek_id>/delete", methods=["POST"])
@@ -343,4 +341,46 @@ def admin_bookings():
     bookings = Bookings.query.order_by(Bookings.booked_at.desc()).all()
     return render_template("admin/bookings.html", bookings=bookings)
 
-# basic routes for user and staff dashboard 
+
+# --Staff-- routes
+@visit.route("/staff/dashboard")
+@login_required
+@staff_required
+def staff_dashboard():
+    assigned_treks = Treks.query.filter_by(assigned_staff_id=session["user_id"]).all()
+    trek_ids = [t.id for t in assigned_treks]
+    total_participants = 0
+    if trek_ids:
+        total_participants = Bookings.query.filter(
+            Bookings.trek_id.in_(trek_ids), Bookings.status == "Booked"
+        ).count()
+    return render_template("staff/dashboard.html", assigned_treks=assigned_treks,
+                            total_participants=total_participants)
+
+
+@visit.route("/staff/trek/<int:trek_id>")
+@login_required
+@staff_required
+def staff_trek_detail(trek_id):
+    trek = Treks.query.get_or_404(trek_id)
+    if trek.assigned_staff_id != session["user_id"] and session.get("role") != "admin":
+        abort(403)
+    bookings = Bookings.query.filter_by(trek_id=trek_id, status="Booked").all()
+    return render_template("staff/trek_detail.html", trek=trek, bookings=bookings)
+
+
+@visit.route("/staff/trek/<int:trek_id>/update", methods=["POST"])
+@login_required
+@staff_required
+def staff_update_trek(trek_id):
+    trek = Treks.query.get_or_404(trek_id)
+    if trek.assigned_staff_id != session["user_id"]:
+        abort(403)
+    trek.available = int(request.form.get("available", 0))
+    status = request.form.get("status", "Open")
+    trek.status = status if status in TREK_STATUSES else "Open"
+    if trek.status == "Completed":
+        Bookings.query.filter_by(trek_id=trek.id, status="Booked").update({"status": "Completed"})
+    db.session.commit()
+    flash("Trek updated!", "success")
+    return redirect(url_for("visit.staff_trek_detail", trek_id=trek_id))

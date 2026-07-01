@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}Staff Dashboard{% endblock %}
+{% block content %}
+
+{{ m.page_header("My Assigned Treks", "Trek Staff") }}
+
+<div class="page-body">
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-card-number">{{ assigned_treks|length }}</div>
+            <div class="stat-card-label">Assigned Treks</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-number">{{ total_participants }}</div>
+            <div class="stat-card-label">Trekkers To Guide</div>
+        </div>
+    </div>
+
+    {% if assigned_treks %}
+    <div class="manage-grid">
+        {% for trek in assigned_treks %}
+        <div class="manage-card">
+            <div class="manage-card-head">
+                <h3>{{ trek.name }}</h3>
+                {{ m.badge(trek.status, status_color(trek.status)) }}
+            </div>
+            <div class="manage-card-meta">
+                <span>📍 {{ trek.location }}</span>
+                <span>📅 {{ format_date(trek.starting_date) }}</span>
+                <span>👥 {{ trek.available }}/{{ trek.capacity }} spots</span>
+            </div>
+            <a href="{{ url_for('visit.staff_trek_detail', trek_id=trek.id) }}" class="btn btn-outline btn-block">Manage Trek</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🧭</div>
+        <h4>No treks assigned yet</h4>
+        <p>The admin will assign treks to you soon.</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}{{ trek.name }}{% endblock %}
+{% block content %}
+
+{{ m.page_header(trek.name, trek.location) }}
+
+<div class="page-body">
+    <div class="split-layout">
+
+        <div class="sq-card">
+            <h2 class="sq-card-title">Trekker Roster ({{ bookings|length }})</h2>
+            {% if bookings %}
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead><tr><th>Name</th><th>Contact</th><th>Participants</th><th>Emergency</th><th>Notes</th></tr></thead>
+                    <tbody>
+                        {% for b in bookings %}
+                        <tr>
+                            <td>{{ b.user.full_name }}</td>
+                            <td>{{ b.user.contact or "—" }}</td>
+                            <td>{{ b.participants }}</td>
+                            <td>{{ b.emergency_contact }} ({{ b.emergency_phone }})</td>
+                            <td class="muted">{{ b.notes or "—" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="muted">No trekkers have booked this trek yet.</p>
+            {% endif %}
+        </div>
+
+        <div class="sq-card">
+            <h2 class="sq-card-title">Trek Status</h2>
+            <p class="manage-card-meta" style="margin-bottom: 18px;">
+                <span>⏱ {{ format_duration(trek.duration) }}</span><br>
+                <span>📅 {{ format_date(trek.starting_date) }} – {{ format_date(trek.ending_date) }}</span>
+            </p>
+            <form method="post" action="{{ url_for('visit.staff_update_trek', trek_id=trek.id) }}">
+                <div class="field">
+                    <label>Available Slots</label>
+                    <input type="number" name="available" min="0" max="{{ trek.capacity }}" value="{{ trek.available }}">
+                </div>
+                <div class="field">
+                    <label>Status</label>
+                    <select name="status">
+                        {% for s in ["Open", "Closed", "Completed"] %}
+                        <option value="{{ s }}" {% if trek.status == s %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Update Trek</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
