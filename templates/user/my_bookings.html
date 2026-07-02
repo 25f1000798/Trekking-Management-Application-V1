@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+
+{{ m.page_header("My Bookings", "Trekker") }}
+
+<div class="page-body">
+    {% if bookings %}
+    <div class="manage-grid">
+        {% for b in bookings %}
+        <div class="manage-card">
+            <div class="manage-card-head">
+                <h3>{{ b.trek.name }}</h3>
+                {{ m.badge(b.status, status_color(b.status)) }}
+            </div>
+            <div class="manage-card-meta">
+                <span>📍 {{ b.trek.location }}</span>
+                <span>📅 {{ format_date(b.trek.starting_date) }}</span>
+                <span>👥 {{ b.participants }} participant(s)</span>
+            </div>
+            <p class="muted" style="margin-bottom: 10px;">Booked on {{ format_date(b.booked_at) }}</p>
+
+            <div class="manage-card-actions">
+                <a href="{{ url_for('visit.trek_detail', trek_id=b.trek.id) }}" class="btn-sm btn-sm-outline">View Trek</a>
+                {% if b.status == 'Booked' %}
+                <form method="post" action="{{ url_for('visit.cancel_booking', booking_id=b.id) }}"
+                    data-confirm="Cancel this booking?">
+                    <button type="submit" class="btn-sm btn-sm-danger">Cancel Booking</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🧗</div>
+        <h4>No bookings yet</h4>
+        <p><a href="{{ url_for('visit.browse_treks') }}">Browse treks</a> to plan your next adventure.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_trek_detail.css') }}">
+{% endblock %}
+{% block title %}{{ trek.name }}{% endblock %}
+{% block content %}
+
+<div class="trek-hero" {% if trek.image_url %}style="background-image:url('{{ trek.image_url }}')"{% endif %}>
+    <div class="trek-hero-overlay"></div>
+    <div class="trek-hero-inner">
+        <span class="badge badge-{{ difficulty_color(trek.difficulty) }}">{{ trek.difficulty }}</span>
+        <span class="badge badge-{{ status_color(trek.status) }}">{{ trek.status }}</span>
+        <h1>{{ trek.name }}</h1>
+        <p>📍 {{ trek.location }} {% if trek.altitude %}· ⛰ {{ trek.altitude }}{% endif %}</p>
+    </div>
+</div>
+
+<div class="trek-detail-body">
+    <div class="trek-detail-main">
+
+        <div class="sq-card">
+            <h2 class="sq-card-title">About This Trek</h2>
+            <p>{{ trek.description }}</p>
+        </div>
+
+        {% if trek.highlights %}
+        <div class="sq-card">
+            <h2 class="sq-card-title">Highlights</h2>
+            <ul class="bullet-list">
+                {% for line in trek.highlights.split('\n') if line.strip() %}
+                <li>✓ {{ line.strip() }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if trek.requirements %}
+        <div class="sq-card">
+            <h2 class="sq-card-title">What You'll Need</h2>
+            <ul class="bullet-list">
+                {% for line in trek.requirements.split('\n') if line.strip() %}
+                <li>🎒 {{ line.strip() }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if trek.staff_member %}
+        <div class="sq-card">
+            <h2 class="sq-card-title">Your Guide</h2>
+            <p>🧭 {{ trek.staff_member.full_name }}</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <aside class="trek-detail-side">
+        <div class="sq-card booking-card">
+            <div class="booking-price">₹{{ "%.0f"|format(trek.price) }}<span>/ person</span></div>
+            <div class="booking-divider"></div>
+            <div class="booking-detail-row">
+                <span>Duration</span>
+                <span>{{ format_duration(trek.duration) }}</span>
+            </div>
+            <div class="booking-detail-row">
+                <span>Start Date</span>
+                <span>{{ format_date(trek.starting_date) }}</span>
+            </div>
+            <div class="booking-detail-row">
+                <span>Available Slots</span>
+                <span>{{ trek.available }} of {{ trek.capacity }}</span>
+            </div>
+
+            {% if current_user.role != 'trekker' %}
+            <p class="flash flash-info" style="margin-top: 14px;">Only trekkers can book this trek.</p>
+            {% elif already_booked %}
+            <p class="flash flash-success" style="margin-top: 14px;">You're booked on this trek!</p>
+            <a href="{{ url_for('visit.my_bookings') }}" class="btn btn-outline btn-block">View My Bookings</a>
+            {% elif trek.status != 'Open' %}
+            <p class="flash flash-warning" style="margin-top: 14px;">This trek isn't currently open for booking.</p>
+            {% else %}
+            <form method="post" action="{{ url_for('visit.book_trek', trek_id=trek.id) }}" style="margin-top: 18px;">
+                <input type="hidden" name="participants" value="1">
+                <div class="field">
+                    <label>Emergency Contact Name</label>
+                    <input type="text" name="emergency_contact" required>
+                </div>
+                <div class="field">
+                    <label>Emergency Contact Phone</label>
+                    <input type="tel" name="emergency_phone" required>
+                </div>
+                <div class="field">
+                    <label>Special Requirements (optional)</label>
+                    <textarea name="special_requirements" rows="2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Book This Trek</button>
+            </form>
+            {% endif %}
+        </div>
+    </aside>
+</div>
+{% endblock %}

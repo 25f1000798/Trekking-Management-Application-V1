@@ -1,0 +1,70 @@
+.browse-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 26px;
+}
+
+.browse-card {
+    background: #fff;
+    border: 1px solid #e7e0d3;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.browse-card-img {
+    height: 180px;
+    background: linear-gradient(135deg, #2f5d3a, #143C2D);
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.browse-card-img .badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+.browse-card-body {
+    padding: 20px;
+}
+
+.browse-card-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    margin-bottom: 6px;
+}
+
+.browse-card-location {
+    color: #8a7f6f;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+}
+
+.browse-card-desc {
+    font-size: 0.88rem;
+    color: #4a5a4d;
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+
+.browse-card-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2f5d3a;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 900px) {
+    .browse-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+    .browse-grid { grid-template-columns: 1fr; }
+    .filter-bar { flex-direction: column; }
+    .filter-bar input,
+    .filter-bar select,
+    .filter-bar button { width: 100%; }
+}

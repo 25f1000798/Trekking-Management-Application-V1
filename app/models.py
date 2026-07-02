@@ -82,7 +82,7 @@ class Treks(db.Model):
 
 
     # relations
-    assigned_staff_id = db.Column(db.Integer,db.ForeignKey("user.id"),nullable = False)
+    assigned_staff_id = db.Column(db.Integer,db.ForeignKey("user.id"),nullable = True)
     bookings = db.relationship(
     "Bookings",
     backref="trek",

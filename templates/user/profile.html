@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+{% endblock %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+
+{{ m.page_header("My Profile", "@" + user.name) }}
+
+<div class="page-body">
+    <div class="sq-card" style="max-width: 600px; margin: 0 auto;">
+        <form method="post">
+            <div class="field">
+                <label>Full Name</label>
+                <input type="text" name="full_name" value="{{ user.full_name }}" required>
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" name="email" value="{{ user.email }}" required>
+            </div>
+            <div class="field">
+                <label>Contact</label>
+                <input type="tel" name="contact" value="{{ user.contact or '' }}">
+            </div>
+            <div class="field">
+                <label>Address</label>
+                <input type="text" name="address" value="{{ user.address or '' }}">
+            </div>
+            <div class="field">
+                <label>About You</label>
+                <textarea name="bio" rows="3">{{ user.bio or '' }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

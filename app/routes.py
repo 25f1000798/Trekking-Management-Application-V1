@@ -384,3 +384,160 @@ def staff_update_trek(trek_id):
     db.session.commit()
     flash("Trek updated!", "success")
     return redirect(url_for("visit.staff_trek_detail", trek_id=trek_id))
+
+
+# --User-- routes
+@visit.route("/user/dashboard")
+@login_required
+def user_dashboard():
+    role = session.get("role")
+    if role == "admin":
+        return redirect(url_for("visit.admin_dashboard"))
+    if role == "staff":
+        return redirect(url_for("visit.staff_dashboard"))
+
+    uid = session["user_id"]
+    open_treks = Treks.query.filter_by(status="Open").order_by(Treks.starting_date).limit(4).all()
+    my_bookings = Bookings.query.filter_by(user_id=uid).order_by(Bookings.booked_at.desc()).limit(5).all()
+    total_booked = Bookings.query.filter_by(user_id=uid, status="Booked").count()
+    total_completed = Bookings.query.filter_by(user_id=uid, status="Completed").count()
+    return render_template(
+        "user/dashboard.html", open_treks=open_treks, my_bookings=my_bookings,
+        total_booked=total_booked, total_completed=total_completed,
+    )
+
+
+@visit.route("/user/treks")
+@login_required
+def browse_treks():
+    q = request.args.get("q", "")
+    difficulty = request.args.get("difficulty", "")
+    location = request.args.get("location", "")
+
+    query = Treks.query.filter_by(status="Open")
+    if q:
+        query = query.filter(db.or_(Treks.name.ilike(f"%{q}%"), Treks.location.ilike(f"%{q}%")))
+    if difficulty:
+        query = query.filter_by(difficulty=difficulty)
+    if location:
+        query = query.filter(Treks.location.ilike(f"%{location}%"))
+    treks = query.order_by(Treks.starting_date).all()
+
+    return render_template("user/browse_treks.html", treks=treks, query=q,
+                            difficulty=difficulty, location=location, difficulties=DIFFICULTIES)
+
+
+@visit.route("/user/treks/<int:trek_id>")
+@login_required
+def trek_detail(trek_id):
+    trek = Treks.query.get_or_404(trek_id)
+    already_booked = Bookings.query.filter_by(
+        user_id=session["user_id"], trek_id=trek_id, status="Booked"
+    ).first()
+    return render_template("user/trek_detail.html", trek=trek, already_booked=already_booked)
+
+
+@visit.route("/user/treks/<int:trek_id>/book", methods=["POST"])
+@login_required
+@active_required
+def book_trek(trek_id):
+    if session.get("role") != "trekker":
+        flash("Only trekkers can book treks.", "danger")
+        return redirect(url_for("visit.trek_detail", trek_id=trek_id))
+
+    trek = Treks.query.get_or_404(trek_id)
+    if trek.status != "Open":
+        flash("This trek is not open for booking.", "danger")
+        return redirect(url_for("visit.trek_detail", trek_id=trek_id))
+
+    uid = session["user_id"]
+    if Bookings.query.filter_by(user_id=uid, trek_id=trek_id, status="Booked").first():
+        flash("You have already booked this trek!", "warning")
+        return redirect(url_for("visit.trek_detail", trek_id=trek_id))
+
+    participants = max(1, int(request.form.get("participants", 1)))
+    if trek.available < participants:
+        flash(f"Only {trek.available} slots left.", "danger")
+        return redirect(url_for("visit.trek_detail", trek_id=trek_id))
+
+    contact = request.form.get("emergency_contact", "").strip()
+    phone = request.form.get("emergency_phone", "").strip()
+    if not contact or not phone:
+        flash("Emergency contact details are required.", "danger")
+        return redirect(url_for("visit.trek_detail", trek_id=trek_id))
+
+    booking = Bookings(
+        user_id=uid, trek_id=trek_id, participants=participants,
+        emergency_contact=contact, emergency_phone=phone,
+        notes=request.form.get("special_requirements", "").strip(),
+        status="Booked",
+    )
+    db.session.add(booking)
+    trek.available -= participants
+    if trek.available == 0:
+        trek.status = "Closed"
+    db.session.commit()
+    flash("Trek booked! Have a great trip.", "success")
+    return redirect(url_for("visit.my_bookings"))
+
+
+@visit.route("/user/bookings")
+@login_required
+def my_bookings():
+    bookings = Bookings.query.filter_by(user_id=session["user_id"]).order_by(Bookings.booked_at.desc()).all()
+    return render_template("user/my_bookings.html", bookings=bookings)
+
+
+@visit.route("/user/bookings/<int:booking_id>/cancel", methods=["POST"])
+@login_required
+def cancel_booking(booking_id):
+    booking = Bookings.query.filter_by(id=booking_id, user_id=session["user_id"]).first_or_404()
+    if booking.status != "Booked":
+        flash("This booking can no longer be cancelled.", "warning")
+        return redirect(url_for("visit.my_bookings"))
+
+    booking.status = "Cancelled"
+    trek = booking.trek
+    if trek:
+        trek.available += booking.participants
+        if trek.status == "Closed" and trek.available > 0:
+            trek.status = "Open"
+    db.session.commit()
+    flash("Booking cancelled.", "info")
+    return redirect(url_for("visit.my_bookings"))
+
+
+@visit.route("/user/profile", methods=["GET", "POST"])
+@login_required
+def profile():
+    user = User.query.get_or_404(session["user_id"])
+    if request.method == "POST":
+        full_name = request.form.get("full_name", "").strip()
+        email = request.form.get("email", "").strip()
+        contact = request.form.get("contact", "").strip()
+        address = request.form.get("address", "").strip()
+        bio = request.form.get("bio", "").strip()
+
+        errors = []
+        if not full_name:
+            errors.append("Full name is required.")
+        if not email or "@" not in email:
+            errors.append("A valid email is required.")
+        if User.query.filter(User.email == email, User.id != user.id).first():
+            errors.append("That email is already in use.")
+
+        if errors:
+            for e in errors:
+                flash(e, "danger")
+        else:
+            user.full_name = full_name
+            user.email = email
+            user.contact = contact
+            user.address = address
+            user.bio = bio
+            db.session.commit()
+            load_session(user)
+            flash("Profile updated!", "success")
+        return redirect(url_for("visit.profile"))
+
+    return render_template("user/profile.html", user=user)

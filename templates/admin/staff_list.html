@@ -29,7 +29,7 @@
                     <tr>
                         <td>{{ s.full_name }}</td>
                         <td>{{ s.email }}</td>
-                        <td>{{ s.contact or "—" }}</td>
+                        <td class="numbers">{{ s.contact or "—" }}</td>
                         <td class="muted">{{ format_date(s.created_at) }}</td>
                         <td>
                             <form method="post" action="{{ url_for('visit.admin_approve_staff', user_id=s.id) }}" style="display:inline">
@@ -59,7 +59,7 @@
                     <tr>
                         <td>{{ s.full_name }}</td>
                         <td>{{ s.email }}</td>
-                        <td>{{ s.contact or "—" }}</td>
+                        <td class="numbers">{{ s.contact or "—" }}</td>
                         <td>{{ s.assigned_treks|length }}</td>
                         <td>
                             {% if s.is_blacklisted %}

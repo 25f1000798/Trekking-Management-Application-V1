@@ -1,0 +1,104 @@
+.trek-hero {
+    position: relative;
+    margin-top: 76px;
+    height: 50vh;
+    background: linear-gradient(135deg, #2f5d3a, #143C2D);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+}
+
+.trek-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 20, 15, 0.85), rgba(10, 20, 15, 0.15));
+}
+
+.trek-hero-inner {
+    position: relative;
+    color: #fff;
+    padding: 40px 60px;
+}
+
+.trek-hero-inner h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.6rem;
+    margin: 10px 0 6px;
+}
+
+.trek-detail-body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.bullet-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+
+.booking-card { position: sticky; top: 100px; }
+
+.booking-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #2f5d3a;
+    margin-bottom: 8px;
+}
+
+.booking-price span {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #8a7f6f;
+}
+
+.booking-divider {
+    border-top: 1px solid #ece6da;
+    margin-bottom: 14px;
+}
+
+.booking-detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1ece1;
+}
+
+.booking-detail-row span:first-child {
+    color: #8a7f6f;
+}
+
+.booking-detail-row span:last-child {
+    font-weight: 600;
+    color: #16231C;
+}
+
+.trek-hero-inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.trek-hero-inner h1 {
+    flex-basis: 100%;
+}
+
+.trek-hero-inner p {
+    flex-basis: 100%;
+}
+
+@media (max-width: 800px) {
+    .trek-hero-inner { padding: 30px 24px; }
+    .trek-hero-inner h1 { font-size: 1.9rem; }
+    .trek-detail-body { grid-template-columns: 1fr; }
+    .booking-card { position: static; }
+}

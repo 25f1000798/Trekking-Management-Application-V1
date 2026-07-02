@@ -22,7 +22,7 @@
                         <td>{{ b.user.full_name }}</td>
                         <td>{{ b.trek.name }}</td>
                         <td>{{ b.participants }}</td>
-                        <td>{{ b.emergency_contact }} ({{ b.emergency_phone }})</td>
+                        <td class="numbers">{{ b.emergency_contact }} ({{ b.emergency_phone }})</td>
                         <td>{{ m.badge(b.status, status_color(b.status)) }}</td>
                         <td class="muted">{{ format_date(b.booked_at) }}</td>
                     </tr>

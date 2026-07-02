@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% import "macros.html" as m %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/for_treks.css') }}">
+{% endblock %}
+{% block title %}Browse Treks{% endblock %}
+{% block content %}
+
+{{ m.page_header("Browse Treks", "Find your next adventure") }}
+
+<div class="page-body">
+
+    <form method="get" class="filter-bar">
+        <input type="text" name="q" placeholder="Search by name or location" value="{{ query }}">
+        <select name="difficulty">
+            <option value="">All Difficulties</option>
+            {% for d in difficulties %}
+            <option value="{{ d }}" {% if d == difficulty %}selected{% endif %}>{{ d }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="location" placeholder="Location" value="{{ location }}">
+        <button type="submit" class="btn btn-outline">Search</button>
+    </form>
+
+    {% if treks %}
+    <div class="browse-grid">
+        {% for trek in treks %}
+        <div class="browse-card">
+            <div class="browse-card-img" {% if trek.image_url %}style="background-image:url('{{ trek.image_url }}')"{% endif %}>
+                <span class="badge badge-{{ difficulty_color(trek.difficulty) }}">{{ trek.difficulty }}</span>
+            </div>
+            <div class="browse-card-body">
+                <h3>{{ trek.name }}</h3>
+                <p class="browse-card-location">📍 {{ trek.location }}</p>
+                <p class="browse-card-desc">{{ trek.description[:110] }}{% if trek.description|length > 110 %}…{% endif %}</p>
+                <div class="browse-card-meta">
+                    <span>⏱ {{ format_duration(trek.duration) }}</span>
+                    <span>👥 {{ trek.available }} left</span>
+                    <span>₹{{ "%.0f"|format(trek.price) }}</span>
+                </div>
+                <a href="{{ url_for('visit.trek_detail', trek_id=trek.id) }}" class="btn btn-primary btn-block">View &amp; Book</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">🏔</div>
+        <h4>No treks match your search</h4>
+        <p>Try a different keyword or filter.</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
