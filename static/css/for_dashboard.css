@@ -35,6 +35,29 @@
     font-size: 2.4rem;
 }
 
+/* --------- back button------------ */
+.back{
+    display: flex;
+    font-family: 'Playfair Display', sans-serif;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3vh;
+    
+}
+a{
+    text-decoration: none;
+}
+.back-btn{
+    background-color: #2f5d3a;
+    padding: 10px 5vw;
+    text-align: center;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
 /* ---------- body ---------- */
 .page-body {
     max-width: 1200px;

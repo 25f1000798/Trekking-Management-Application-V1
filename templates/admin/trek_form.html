@@ -14,17 +14,20 @@
 
             <div class="field">
                 <label>Trek Name</label>
-                <input type="text" name="name" value="{{ trek.name if trek else '' }}" placeholder="e.g. Kedarnath Trek" required>
+                <input type="text" name="name" value="{{ trek.name if trek else '' }}" placeholder="e.g. Kedarnath Trek"
+                    required>
             </div>
 
             <div class="field-row">
                 <div class="field">
                     <label>Location</label>
-                    <input type="text" name="location" value="{{ trek.location if trek else '' }}" placeholder="e.g. Uttarakhand, India" required>
+                    <input type="text" name="location" value="{{ trek.location if trek else '' }}"
+                        placeholder="e.g. Uttarakhand, India" required>
                 </div>
                 <div class="field">
                     <label>Altitude</label>
-                    <input type="text" name="altitude" placeholder="e.g. 4270m" value="{{ trek.altitude if trek else '' }}">
+                    <input type="text" name="altitude" placeholder="e.g. 4270m"
+                        value="{{ trek.altitude if trek else '' }}">
                 </div>
             </div>
 
@@ -33,7 +36,7 @@
                     <label>Difficulty</label>
                     <select name="difficulty" required>
                         {% for d in difficulties %}
-                        <option value="{{ d }}" {% if trek and trek.difficulty == d %}selected{% endif %}>{{ d }}</option>
+                        <option value="{{ d }}" {% if trek and trek.difficulty==d %}selected{% endif %}>{{ d }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -52,7 +55,8 @@
                         color: var(--sq-text, #212529);
                     ">
                         <span id="duration-icon">📅</span>
-                        <span id="duration-text">{% if trek %}{{ format_duration(trek.duration) }}{% else %}Pick dates below{% endif %}</span>
+                        <span id="duration-text">{% if trek %}{{ format_duration(trek.duration) }}{% else %}Pick dates
+                            below{% endif %}</span>
                     </div>
                 </div>
             </div>
@@ -85,83 +89,95 @@
 
             <div class="field">
                 <label>Image URL</label>
-                <input type="text" name="image_url" placeholder="https://..." value="{{ trek.image_url if trek else '' }}">
+                <input type="text" name="image_url" placeholder="https://..."
+                    value="{{ trek.image_url if trek else '' }}">
             </div>
 
             <div class="field">
                 <label>Description</label>
-                <textarea name="description" rows="3" placeholder="Describe the trek...">{{ trek.description if trek else '' }}</textarea>
+                <textarea name="description" rows="3"
+                    placeholder="Describe the trek...">{{ trek.description if trek else '' }}</textarea>
             </div>
 
             <div class="field">
                 <label>Highlights (one per line)</label>
-                <textarea name="highlights" rows="3" placeholder="Scenic valley views&#10;Glacial lakes&#10;Stunning sunrises...">{{ trek.highlights if trek else '' }}</textarea>
+                <textarea name="highlights" rows="3"
+                    placeholder="Scenic valley views&#10;Glacial lakes&#10;Stunning sunrises...">{{ trek.highlights if trek else '' }}</textarea>
             </div>
 
             <div class="field">
                 <label>Requirements (one per line)</label>
-                <textarea name="requirements" rows="3" placeholder="Basic fitness level&#10;Trekking shoes&#10;Warm clothing...">{{ trek.requirements if trek else '' }}</textarea>
+                <textarea name="requirements" rows="3"
+                    placeholder="Basic fitness level&#10;Trekking shoes&#10;Warm clothing...">{{ trek.requirements if trek else '' }}</textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block">{{ "Save Changes" if trek else "Create Trek" }}</button>
+            <button type="submit" class="btn btn-primary btn-block">{{ "Save Changes" if trek else "Create Trek"
+                }}</button>
         </form>
     </div>
+
+    <div class="back">
+        <div class="back-btn">
+            <a href=" {{url_for('visit.admin_treks')}}">Back</a>
+        </div>
+    </div>
+    
 </div>
 
 <script>
-(function () {
-    var startInput = document.querySelector('input[name="starting_date"]');
-    var endInput   = document.querySelector('input[name="ending_date"]');
-    var display    = document.getElementById('duration-text');
-    var icon       = document.getElementById('duration-icon');
-    var wrapper    = document.getElementById('duration-display');
+    (function () {
+        var startInput = document.querySelector('input[name="starting_date"]');
+        var endInput = document.querySelector('input[name="ending_date"]');
+        var display = document.getElementById('duration-text');
+        var icon = document.getElementById('duration-icon');
+        var wrapper = document.getElementById('duration-display');
 
-    function formatDuration(days) {
-        if (days < 1) return null;
-        var weeks     = Math.floor(days / 7);
-        var remainder = days % 7;
-        var parts = [];
-        if (weeks)     parts.push(weeks     + ' Week'  + (weeks     > 1 ? 's' : ''));
-        if (remainder) parts.push(remainder + ' Day'   + (remainder > 1 ? 's' : ''));
-        return parts.length ? parts.join(' ') : days + ' Day' + (days !== 1 ? 's' : '');
-    }
+        function formatDuration(days) {
+            if (days < 1) return null;
+            var weeks = Math.floor(days / 7);
+            var remainder = days % 7;
+            var parts = [];
+            if (weeks) parts.push(weeks + ' Week' + (weeks > 1 ? 's' : ''));
+            if (remainder) parts.push(remainder + ' Day' + (remainder > 1 ? 's' : ''));
+            return parts.length ? parts.join(' ') : days + ' Day' + (days !== 1 ? 's' : '');
+        }
 
-    function update() {
-        var s = startInput.value;
-        var e = endInput.value;
+        function update() {
+            var s = startInput.value;
+            var e = endInput.value;
 
-        if (!s || !e) {
-            icon.textContent    = '📅';
-            display.textContent = 'Pick both dates';
-            wrapper.style.borderColor = '';
+            if (!s || !e) {
+                icon.textContent = '📅';
+                display.textContent = 'Pick both dates';
+                wrapper.style.borderColor = '';
+                wrapper.style.color = '';
+                return;
+            }
+
+            var startMs = new Date(s).getTime();
+            var endMs = new Date(e).getTime();
+            var days = Math.round((endMs - startMs) / 86400000) + 1; // inclusive
+
+            if (days < 1) {
+                icon.textContent = '⚠️';
+                display.textContent = 'End date must be after start date';
+                wrapper.style.borderColor = '#dc3545';
+                wrapper.style.color = '#dc3545';
+                endInput.setCustomValidity('End date must be on or after start date.');
+                return;
+            }
+
+            endInput.setCustomValidity('');
+            icon.textContent = '⏱';
+            display.textContent = formatDuration(days);
+            wrapper.style.borderColor = '#198754';
             wrapper.style.color = '';
-            return;
         }
 
-        var startMs = new Date(s).getTime();
-        var endMs   = new Date(e).getTime();
-        var days    = Math.round((endMs - startMs) / 86400000) + 1; // inclusive
+        startInput.addEventListener('change', update);
+        endInput.addEventListener('change', update);
 
-        if (days < 1) {
-            icon.textContent    = '⚠️';
-            display.textContent = 'End date must be after start date';
-            wrapper.style.borderColor = '#dc3545';
-            wrapper.style.color       = '#dc3545';
-            endInput.setCustomValidity('End date must be on or after start date.');
-            return;
-        }
-
-        endInput.setCustomValidity('');
-        icon.textContent    = '⏱';
-        display.textContent = formatDuration(days);
-        wrapper.style.borderColor = '#198754';
-        wrapper.style.color       = '';
-    }
-
-    startInput.addEventListener('change', update);
-    endInput.addEventListener('change', update);
-
-    if (startInput.value && endInput.value) update();
-})();
+        if (startInput.value && endInput.value) update();
+    })();
 </script>
 {% endblock %}
