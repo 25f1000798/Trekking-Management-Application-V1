@@ -111,17 +111,14 @@
                     placeholder="Basic fitness level&#10;Trekking shoes&#10;Warm clothing...">{{ trek.requirements if trek else '' }}</textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block">{{ "Save Changes" if trek else "Create Trek"
+            <button type="submit" class="btn btn-primary btn-block" style="font-family: 'Playfair display';">{{ "Save Changes" if trek else "Create Trek"
                 }}</button>
+            <button type="submit" class="btn btn-primary btn-block back" onclick="window.location.href = '{{url_for('visit.admin_treks')}}'" >
+                Cancel
+            </button>
         </form>
-    </div>
 
-    <div class="back">
-        <div class="back-btn">
-            <a href=" {{url_for('visit.admin_treks')}}">Back</a>
-        </div>
     </div>
-    
 </div>
 
 <script>

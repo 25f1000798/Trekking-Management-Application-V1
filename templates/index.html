@@ -1,6 +1,116 @@
 {% extends "base.html"%}
 {% block extra_css%}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/for_index.css') }}">
+<style>
+    .quote {
+    width: 100%;
+    padding: 80px 40px;
+    background: linear-gradient(100deg, #4a4640 0%, #8a8478 30%, #c9c3b6 55%, #8a8478 80%, #6b665d 100%);
+}
+
+.quote_container {
+    max-width: 800px;
+}
+
+.quote_label {
+    font-family: monospace;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #d8d3c8;
+    margin: 0 0 20px 0;
+}
+
+.quote_text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 36px;
+    color: #f5f2ea;
+    margin: 0 0 20px 0;
+    line-height: 1.3;
+}
+
+.quote_author {
+    font-family: monospace;
+    font-size: 14px;
+    color: #d8d3c8;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .quote {
+        padding: 60px 24px;
+    }
+    .quote_text {
+        font-size: 26px;
+    }
+}
+
+.redirect {
+    width: 100%;
+    padding: 100px 40px;
+    background-color: #ede7db;
+    text-align: center;
+}
+
+.redirect_container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.redirect_label {
+    font-family: monospace;
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #5ba967;
+    margin: 0 0 16px 0;
+}
+
+.redirect_title {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    color: #2b2b28;
+    margin: 0 0 20px 0;
+    line-height: 1.2;
+}
+
+.redirect_subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: #6b6558;
+    margin: 0 0 36px 0;
+    line-height: 1.5;
+}
+
+.redirect_btn {
+    display: inline-block;
+    background-color: #3f6b47;
+    color: #fff;
+    font-weight: bold;
+    font-size: 17px;
+    padding: 16px 32px;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.redirect_btn:hover {
+    background-color: #345a3c;
+}
+
+@media (max-width: 768px) {
+    .redirect {
+        padding: 70px 24px;
+    }
+    .redirect_title {
+        font-size: 32px;
+    }
+    .redirect_subtitle {
+        font-size: 17px;
+    }
+}
+</style>
 {% endblock %}
 {% block title%}Home{% endblock %}
 {% block content %}
@@ -29,7 +139,7 @@
     </div>
 </section>
 
-<section class="featured-section">
+<section class="featured-section" id="treks_redirect">
     <div class="open">
         <span class="open-text">---- NOW OPEN ----</span>
     </div>
@@ -63,5 +173,33 @@
     <p class="muted">No open treks right now — check back soon!</p>
     {% endif %}
 
+</section>
+
+<section class="quote">
+    <div class="quote_container">
+        <p class="quote_label">The Mountains Call</p>
+        <p class="quote_text">"The mountains are calling and I must go."</p>
+        <p class="quote_author">— John Muir</p>
+    </div>
+</section>
+
+<section class="redirect">
+    <div class="redirect_container">
+        <p class="redirect_label">— Ready?</p>
+        <h2 class="redirect_title">Your Mountain Story Starts Here</h2>
+        <p class="redirect_subtitle">Join hundreds of trekkers who've already discovered their peaks with SummitQuest.</p>
+        {% if current_user.is_authenticated %}
+            {% if current_user.role == 'trekker' %}
+                <a href="{{ url_for('visit.browse_treks')}}" class="redirect_btn">Explore Treks →</a>
+            {% elif current_user.role == 'admin' %}
+                <a href="{{ url_for('visit.admin_treks')}}" class="redirect_btn">Explore Treks →</a>
+            {% endif %}
+        {% else %}
+            <div>
+            <a href="{{ url_for('visit.login') }}" class="btn btn-primary">Login</a>
+            <a href="{{ url_for('visit.register') }}" class="btn btn-outline">Register</a>
+            </div>
+        {% endif %}
+    </div>
 </section>
 {% endblock %}

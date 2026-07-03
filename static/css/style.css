@@ -249,17 +249,20 @@ a {
 }
 
 .btn-primary {
-    background: #2f5d3a;
+    background: #3a7548;
     color: #fff;
 }
-.btn-primary:hover { background: #244a2d; }
+.btn-primary:hover { background: #59b16e; }
 
 .btn-outline {
     background: transparent;
     color: #2f5d3a;
     border: 1px solid #2f5d3a;
 }
-.btn-outline:hover { background: #eef4ee; }
+.btn-outline:hover { 
+    color: white;
+    background: #3f7c3f;
+}
 
 .btn-block { width: 100%; }
 

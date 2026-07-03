@@ -25,4 +25,4 @@ setTimeout(() => {
     if (stack) {
         stack.remove();
     }
-}, 2000);
+}, 2500);

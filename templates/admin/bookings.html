@@ -2,6 +2,11 @@
 {% import "macros.html" as m %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+<style>
+    .page-header {
+        background-image:url(https://images.hdqwalls.com/download/mountain-range-blue-5k-yf-3840x2160.jpg) ;
+    }
+</style>
 {% endblock %}
 {% block title %}All Bookings{% endblock %}
 {% block content %}
@@ -14,11 +19,12 @@
         <div class="table-wrap">
             <table class="data-table">
                 <thead>
-                    <tr><th>Trekker</th><th>Trek</th><th>Participants</th><th>Emergency Contact</th><th>Status</th><th>Booked On</th></tr>
+                    <tr><th>id</th><th>Trekker</th><th>Trek</th><th>Participants</th><th>Emergency Contact</th><th>Status</th><th>Booked On</th></tr>
                 </thead>
                 <tbody>
                     {% for b in bookings %}
                     <tr>
+                        <td>#{{ b.id }}</td>
                         <td>{{ b.user.full_name }}</td>
                         <td>{{ b.trek.name }}</td>
                         <td>{{ b.participants }}</td>

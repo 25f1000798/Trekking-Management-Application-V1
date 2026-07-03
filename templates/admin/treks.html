@@ -36,7 +36,10 @@
         {% for trek in treks %}
         <div class="manage-card">
             <div class="manage-card-head">
-                <h3>{{ trek.name }}</h3>
+                <h3>
+                <div class="id_number">#{{ trek.id }}</div>
+                    {{ trek.name }}
+                </h3>
                 {{ m.badge(trek.status, status_color(trek.status)) }}
             </div>
             <div class="manage-card-meta">

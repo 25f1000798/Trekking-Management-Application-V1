@@ -21,7 +21,7 @@
                         {% for b in bookings %}
                         <tr>
                             <td>{{ b.user.full_name }}</td>
-                            <td>{{ b.user.contact or "—" }}</td>
+                            <td class="numbers">{{ b.user.contact or "—" }}</td>
                             <td>{{ b.participants }}</td>
                             <td>{{ b.emergency_contact }} ({{ b.emergency_phone }})</td>
                             <td class="muted">{{ b.notes or "—" }}</td>

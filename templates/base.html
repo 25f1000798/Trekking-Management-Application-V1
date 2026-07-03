@@ -54,6 +54,8 @@
             <li><a href="{{ url_for('visit.browse_treks') }}">Treks</a></li>
             <li><a href="{{ url_for('visit.my_bookings') }}">My Bookings</a></li>
             {% endif %}
+        {% else %}
+            <li><a href="#treks_redirect">Treks</a></li>
         {% endif %}
     </ul>
 

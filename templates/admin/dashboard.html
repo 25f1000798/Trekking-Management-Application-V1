@@ -2,6 +2,11 @@
 {% import "macros.html" as m %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+<style>
+    .page-header {
+    background-image: url(https://as2.ftcdn.net/v2/jpg/05/81/57/71/1000_F_581577124_iB9R83XzQu4prVOR7pX9ynWssCp5miSK.jpg);
+}
+</style>
 {% endblock %}
 {% block title %}Admin Dashboard{% endblock %}
 {% block content %}
@@ -13,7 +18,7 @@
     {% if pending_staff %}
     <div class="flash flash-warning" style="margin-bottom: 26px;">
         {{ pending_staff }} staff registration(s) awaiting approval —
-        <a href="{{ url_for('visit.admin_staff_list') }}">review now</a>.
+        <a href="{{ url_for('visit.admin_staff_list') }}">review now</a>
     </div>
     {% endif %}
 
@@ -52,11 +57,12 @@
         <div class="table-wrap">
             <table class="data-table">
                 <thead>
-                    <tr><th>Trekker</th><th>Trek</th><th>Participants</th><th>Status</th><th>Booked On</th></tr>
+                    <tr><th>id</th><th>Trekker</th><th>Trek</th><th>Participants</th><th>Status</th><th>Booked On</th></tr>
                 </thead>
                 <tbody>
                     {% for b in recent_bookings %}
                     <tr>
+                        <td>#{{ b.id }}</td>
                         <td>{{ b.user.full_name }}</td>
                         <td>{{ b.trek.name }}</td>
                         <td>{{ b.participants }}</td>

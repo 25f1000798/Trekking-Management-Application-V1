@@ -2,6 +2,33 @@
 {% import "macros.html" as m %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
+<style>
+    .page-header {
+        background-image:url(https://img.freepik.com/premium-photo/mountain-trekking-hd-8k-wallpaper-stock-photographic-image_890746-75198.jpg?w=740) ;
+    }
+    .division{
+        
+    display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 3vh;
+            margin-bottom: 5vh;
+            padding-top: 2vh;
+            padding-bottom: 2vh;
+            font-size: x-large;
+            /* border: 2px solid black; */
+            border-radius: 10px;
+            background-color: rgb(50, 114, 50);
+            color: white;
+            box-shadow: 3px 5px grey;
+            width: 50%;
+    }
+
+    @media (max-width: 800px) {
+        .division{font-size: 1rem;}
+}
+
+</style>
 {% endblock %}
 {% block title %}Staff Dashboard{% endblock %}
 {% block content %}
@@ -21,6 +48,9 @@
         </div>
     </div>
 
+    <div class="division">
+            Your Assigned Treks
+    </div>
     {% if assigned_treks %}
     <div class="manage-grid">
         {% for trek in assigned_treks %}
