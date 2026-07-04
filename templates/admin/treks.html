@@ -36,8 +36,13 @@
         {% for trek in treks %}
         <div class="manage-card">
             <div class="manage-card-head">
+                <div class="card-trek_image">
+                    <img src="{{ trek.image_url }}" alt="trek_img" height="100vh" width="auto" style="border-radius: 10px;" >
+                    <!-- <img src="{{ trek.image_url }}" alt="trek_img" height="auto" width="100%" style="border-radius: 10px;"> -->
+                    
+                </div>
                 <h3>
-                <div class="id_number">#{{ trek.id }}</div>
+                <div class="id_number">#{{ trek.id }}</div><br>
                     {{ trek.name }}
                 </h3>
                 {{ m.badge(trek.status, status_color(trek.status)) }}
@@ -50,8 +55,8 @@
             </div>
 
             <div class="manage-card-actions">
-                <a href="{{ url_for('visit.admin_edit_trek', trek_id=trek.id) }}" class="btn-sm btn-sm-outline">Edit</a>
-                <a href="{{ url_for('visit.admin_assign_staff', trek_id=trek.id) }}" class="btn-sm btn-sm-outline">Assign Staff</a>
+                <a href="{{ url_for('visit.admin_edit_trek', trek_id=trek.id) }}" class="btn-sm btn-sm-outline manipulation-btn">Edit</a>
+                <a href="{{ url_for('visit.admin_assign_staff', trek_id=trek.id) }}" class="btn-sm btn-sm-outline manipulation-btn">Assign Staff</a>
 
                 {% if trek.status == 'Pending' %}
                 <form method="post" action="{{ url_for('visit.admin_approve_trek', trek_id=trek.id) }}">

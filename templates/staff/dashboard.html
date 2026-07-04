@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
 <style>
     .page-header {
-        background-image:url(https://img.freepik.com/premium-photo/mountain-trekking-hd-8k-wallpaper-stock-photographic-image_890746-75198.jpg?w=740) ;
+        background-image:url(https://img.freepik.com/premium-photo/mountain-trekking-hd-8k-wallpaper-stock-photographic-image_890746-75198.jpg?w=2000) ;
     }
     .division{
         
@@ -21,11 +21,12 @@
             background-color: rgb(50, 114, 50);
             color: white;
             box-shadow: 3px 5px grey;
-            width: 50%;
+            width: 25%;
+            font-size: 1rem;
     }
 
     @media (max-width: 800px) {
-        .division{font-size: 1rem;}
+        .division{font-size: 0.8rem; width: 50%;}
 }
 
 </style>
@@ -55,6 +56,10 @@
     <div class="manage-grid">
         {% for trek in assigned_treks %}
         <div class="manage-card">
+            <div class="card-trek_image">
+                    <img src="{{ trek.image_url }}" alt="trek_img" height="auto" width="100%" style="border-radius: 10px;">
+                </div>
+                <br>
             <div class="manage-card-head">
                 <h3>{{ trek.name }}</h3>
                 {{ m.badge(trek.status, status_color(trek.status)) }}

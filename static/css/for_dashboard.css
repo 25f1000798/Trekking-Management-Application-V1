@@ -7,12 +7,7 @@
     background-size: cover;
     background-position: center;
     color: #fff;
-}
-
-.page-header-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, rgba(20, 60, 45, 0.88), rgba(10, 20, 15, 0.6));
+    border-radius: 20px;
 }
 
 .page-header-inner {
@@ -147,6 +142,9 @@ a{
     border: 1px solid #e7e0d3;
     border-radius: 10px;
     padding: 20px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    /* very important for alignment */
 }
 
 .manage-card-head {
@@ -213,4 +211,15 @@ a{
     font-family: sans-serif;
     margin-left: 2px;
     font-weight: 500;
+}
+
+/* ----------------- Button hover */
+.manipulation-btn {
+    background-color: white;
+  transition: background-color 0.8s ease;
+}
+
+.manipulation-btn:hover {
+  background-color: #4a7c59; /* green on hover */
+  color: white;
 }

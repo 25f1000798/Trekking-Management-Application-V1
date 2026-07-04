@@ -73,6 +73,8 @@ a {
     font-size: 17px;
     padding-bottom: 4px;
     border-bottom: 2px solid transparent;
+    transition: all 0.8s ease;
+
 }
 
 .nav-links a:hover {
@@ -93,6 +95,7 @@ a {
     color: #16231C;
     padding-bottom: 4px;
     border-bottom: 2px solid transparent;
+    transition: all 0.8s ease;
 }
 
 .btn-login:hover {
@@ -104,13 +107,15 @@ a {
     font-weight: 600;
     font-size: 16px;
     color: #FFFFFF;
-    background: #3f9d79;
+    background: #3caa4a;
     padding: 9px 18px;
     border-radius: 8px;
+    transition: all 0.8s ease;
+
 }
 
 .btn-register:hover {
-    background: #2f9437;
+    background: #057d0f;
 }
 
 
@@ -171,6 +176,8 @@ a {
     font-size: 15px;
     padding: 12px 0;
     border-bottom: 1px solid #DCE4DD;
+    transition: all 0.8s ease;
+
 }
 
 .mobile-menu a:last-child {
@@ -264,7 +271,10 @@ a {
     background: #3f7c3f;
 }
 
-.btn-block { width: 100%; }
+.btn-block { 
+    width: 100%;
+    transition: all 0.8s ease;
+}
 
 .btn-sm {
     padding: 6px 12px;
