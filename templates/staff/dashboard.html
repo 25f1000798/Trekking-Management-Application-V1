@@ -4,31 +4,34 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/for_dashboard.css') }}">
 <style>
     .page-header {
-        background-image:url(https://img.freepik.com/premium-photo/mountain-trekking-hd-8k-wallpaper-stock-photographic-image_890746-75198.jpg?w=2000) ;
+        background-image: url(https://img.freepik.com/premium-photo/mountain-trekking-hd-8k-wallpaper-stock-photographic-image_890746-75198.jpg?w=2000);
     }
-    .division{
-        
-    display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 3vh;
-            margin-bottom: 5vh;
-            padding-top: 2vh;
-            padding-bottom: 2vh;
-            font-size: x-large;
-            /* border: 2px solid black; */
-            border-radius: 10px;
-            background-color: rgb(50, 114, 50);
-            color: white;
-            box-shadow: 3px 5px grey;
-            width: 25%;
-            font-size: 1rem;
+
+    .division {
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 3vh;
+        margin-bottom: 5vh;
+        padding-top: 2vh;
+        padding-bottom: 2vh;
+        font-size: x-large;
+        /* border: 2px solid black; */
+        border-radius: 10px;
+        background-color: rgb(50, 114, 50);
+        color: white;
+        box-shadow: 3px 5px grey;
+        width: 25%;
+        font-size: 1rem;
     }
 
     @media (max-width: 800px) {
-        .division{font-size: 0.8rem; width: 50%;}
-}
-
+        .division {
+            font-size: 0.8rem;
+            width: 50%;
+        }
+    }
 </style>
 {% endblock %}
 {% block title %}Staff Dashboard{% endblock %}
@@ -50,26 +53,29 @@
     </div>
 
     <div class="division">
-            Your Assigned Treks
+        Your Assigned Treks
     </div>
     {% if assigned_treks %}
     <div class="manage-grid">
         {% for trek in assigned_treks %}
-        <div class="manage-card">
+        <div class="manage-card" style="padding: 0px;">
             <div class="card-trek_image">
-                    <img src="{{ trek.image_url }}" alt="trek_img" height="auto" width="100%" style="border-radius: 10px;">
+                <img src="{{ trek.image_url }}" alt="trek_img" height="auto" width="100%"
+                    style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+            </div>
+            <div class="card-details">
+                <div class="manage-card-head">
+                    <h3>{{ trek.name }}</h3>
+                    {{ m.badge(trek.status, status_color(trek.status)) }}
                 </div>
-                <br>
-            <div class="manage-card-head">
-                <h3>{{ trek.name }}</h3>
-                {{ m.badge(trek.status, status_color(trek.status)) }}
+                <div class="manage-card-meta">
+                    <span>📍 {{ trek.location }}</span>
+                    <span>📅 {{ format_date(trek.starting_date) }}</span>
+                    <span>👥 {{ trek.available }}/{{ trek.capacity }} spots</span>
+                </div>
+                <a href="{{ url_for('visit.staff_trek_detail', trek_id=trek.id) }}"
+                    class="btn btn-outline btn-block">Manage Trek</a>
             </div>
-            <div class="manage-card-meta">
-                <span>📍 {{ trek.location }}</span>
-                <span>📅 {{ format_date(trek.starting_date) }}</span>
-                <span>👥 {{ trek.available }}/{{ trek.capacity }} spots</span>
-            </div>
-            <a href="{{ url_for('visit.staff_trek_detail', trek_id=trek.id) }}" class="btn btn-outline btn-block">Manage Trek</a>
         </div>
         {% endfor %}
     </div>

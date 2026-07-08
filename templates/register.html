@@ -7,6 +7,21 @@
         width: 40% !important;
     }
 
+    /* for responsiveness */
+    @media(max-width:950px) {
+        .register-card{
+            width: 60% !important;
+            margin-top: 5vh;
+        }
+    }
+
+        @media(max-width:650px) {
+        .register-card{
+            width: 90% !important;
+            margin-top: 5vh;
+        }
+    }
+
     .auth-register {
         height: auto;
         min-height: 100vh;
@@ -89,28 +104,9 @@
     }
 
     .divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        color: #8a7f6f;
-        font-style: italic;
         margin: 25px 0;
     }
 
-    .divider::before,
-    .divider::after {
-        content: "";
-        flex: 1;
-        border-bottom: 1px solid #ddd5c5;
-    }
-
-    .divider::before {
-        margin-right: 12px;
-    }
-
-    .divider::after {
-        margin-left: 12px;
-    }
 </style>
 {% endblock %}
 

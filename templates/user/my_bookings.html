@@ -30,7 +30,7 @@
             <p class="muted" style="margin-bottom: 10px;">Booked on {{ format_date(b.booked_at) }}</p>
 
             <div class="manage-card-actions">
-                <a href="{{ url_for('visit.trek_detail', trek_id=b.trek.id) }}" class="btn-sm btn-sm-outline">View Trek</a>
+                <a href="{{ url_for('visit.trek_detail', trek_id=b.trek.id) }}" class="btn-sm btn-sm-outline manipulation-btn">View Trek</a>
                 {% if b.status == 'Booked' %}
                 <form method="post" action="{{ url_for('visit.cancel_booking', booking_id=b.id) }}"
                     data-confirm="Cancel this booking?">

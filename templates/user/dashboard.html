@@ -31,11 +31,11 @@
         {% if open_treks %}
         <div class="manage-grid">
             {% for trek in open_treks %}
-            <div class="manage-card">
+            <div class="manage-card" style="padding: 0px;">
                 <div class="card-trek_image">
-                    <img src="{{ trek.image_url }}" alt="trek_img" height="auto" width="100%" style="border-radius: 10px;">
+                    <img src="{{ trek.image_url }}" alt="trek_img" height="auto" width="100%" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
                 </div>
-                <br>
+                <div class="card-details">
                 <div class="manage-card-head">
                     <h3>{{ trek.name }}</h3>
                     {{ m.badge(trek.difficulty, difficulty_color(trek.difficulty)) }}
@@ -45,6 +45,7 @@
                     <span>👥 {{ trek.available }} spots left</span>
                 </div>
                 <a href="{{ url_for('visit.trek_detail', trek_id=trek.id) }}" class="btn btn-outline btn-block">View &amp; Book</a>
+                </div>
             </div>
             {% endfor %}
         </div>

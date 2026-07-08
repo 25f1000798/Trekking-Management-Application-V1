@@ -491,6 +491,32 @@ a {
     }
 }
 
+/* ------------ OR divider -------------- */
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #8a7f6f;
+        font-style: italic;
+        margin: 15px 0;
+        /* margin-bottom: 5px; */
+    }
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid #ddd5c5;
+    }
+
+    .divider::before {
+        margin-right: 12px;
+    }
+
+    .divider::after {
+        margin-left: 12px;
+    }
+
 /* ---------- Empty state ---------- */
 .empty-state {
     text-align: center;

@@ -31,26 +31,28 @@
 }
 
 /* --------- back button------------ */
-.back{
+.back {
     display: flex;
     font-family: 'Playfair Display', sans-serif;
     align-items: center;
     justify-content: center;
     margin-top: 2vh;
-    background-color: white;
+    background-color: whitesmoke;
     color: #2f5d3a;
     border: #2f5d3a 1px solid;
     font-size: 1rem;
     padding: 10px 1vw;
     border-radius: 10px;
 }
-a{
+
+a {
     text-decoration: none;
 }
-.back:hover{
+
+.back:hover {
     background-color: #2f5d3a;
     text-align: center;
-    color: white;
+    color: whitesmoke;
     cursor: pointer;
     font-weight: 600;
 }
@@ -97,7 +99,8 @@ a{
 
 /* ---------- Generic card ---------- */
 .sq-card {
-    background: #fff;
+    /* background: #fff; */
+    background-color: whitesmoke;
     border: 1px solid #e7e0d3;
     border-radius: 10px;
     padding: 26px;
@@ -108,6 +111,10 @@ a{
     font-family: 'Playfair Display', serif;
     font-size: 1.3rem;
     margin-bottom: 18px;
+}
+
+.sq-card tr:hover{
+    background-color: white;
 }
 
 /* ---------- Search / filter bar ---------- */
@@ -128,7 +135,10 @@ a{
     background: #fff;
 }
 
-.filter-bar input[type="text"] { flex: 1; min-width: 200px; }
+.filter-bar input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+}
 
 /* ---------- Management trek card ---------- */
 .manage-grid {
@@ -138,13 +148,25 @@ a{
 }
 
 .manage-card {
-    background: #fff;
-    border: 1px solid #e7e0d3;
+    background: whitesmoke;
+    border: 1px solid white;
     border-radius: 10px;
     padding: 20px;
     display: grid;
     grid-template-rows: auto 1fr auto;
     /* very important for alignment */
+    transition: all 0.35s ease;
+}
+
+.manage-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 48px rgba(28, 46, 32, 0.22),
+                0 8px 20px rgba(28, 46, 32, 0.12),
+                0 2px 6px rgba(196, 154, 84, 0.15);
+}
+
+.card-details{
+    padding: 20px;
 }
 
 .manage-card-head {
@@ -178,7 +200,9 @@ a{
     padding-top: 14px;
 }
 
-.manage-card-actions form { display: inline; }
+.manage-card-actions form {
+    display: inline;
+}
 
 .split-layout {
     display: grid;
@@ -187,23 +211,33 @@ a{
     align-items: start;
 }
 
-.numbers{
-    font-family: 'Poppins',sans-serif;
+.numbers {
+    font-family: 'Poppins', sans-serif;
 }
 
 @media (max-width: 800px) {
-    .split-layout { grid-template-columns: 1fr; }
+    .split-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 700px) {
-    .page-header { padding: 40px 24px; }
-    .page-header-title { font-size: 1.8rem; }
-    .page-body { padding: 30px 18px 60px; }
+    .page-header {
+        padding: 40px 24px;
+    }
+
+    .page-header-title {
+        font-size: 1.8rem;
+    }
+
+    .page-body {
+        padding: 30px 18px 60px;
+    }
 }
 
 
 /* UI polishing */
-.id_number{
+.id_number {
     display: inline;
     padding: 1px;
     text-align: center;
@@ -215,11 +249,12 @@ a{
 
 /* ----------------- Button hover */
 .manipulation-btn {
-    background-color: white;
-  transition: background-color 0.8s ease;
+    background-color: whitesmoke;
+    transition: background-color 0.8s ease;
 }
 
 .manipulation-btn:hover {
-  background-color: #4a7c59; /* green on hover */
-  color: white;
+    background-color: #4a7c59;
+    /* green on hover */
+    color: whitesmoke;
 }

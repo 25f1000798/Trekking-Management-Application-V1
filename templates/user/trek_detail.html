@@ -80,6 +80,9 @@
             <a href="{{ url_for('visit.my_bookings') }}" class="btn btn-outline btn-block">View My Bookings</a>
             {% elif trek.status != 'Open' %}
             <p class="flash flash-warning" style="margin-top: 14px;">This trek isn't currently open for booking.</p>
+            {% elif trek.available == 0%}
+            <p class="flash flash-warning" style="margin-top: 14px;">Sorry!! This trek is full.</p>
+
             {% else %}
             <form method="post" action="{{ url_for('visit.book_trek', trek_id=trek.id) }}" style="margin-top: 18px;">
                 <input type="hidden" name="participants" value="1">
