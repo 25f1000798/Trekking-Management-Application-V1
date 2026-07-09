@@ -34,7 +34,7 @@
                 {% if b.status == 'Booked' %}
                 <form method="post" action="{{ url_for('visit.cancel_booking', booking_id=b.id) }}"
                     data-confirm="Cancel this booking?">
-                    <button type="submit" class="btn-sm btn-sm-danger">Cancel Booking</button>
+                    <button type="submit" class="btn-sm btn-sm-danger danger">Cancel Booking</button>
                 </form>
                 {% endif %}
             </div>

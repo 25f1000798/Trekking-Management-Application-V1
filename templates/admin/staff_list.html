@@ -74,7 +74,7 @@
                             {{ m.badge("Active", "success") }}
                             {% endif %}
                             <form method="post" action="{{ url_for('visit.admin_blacklist_user', user_id=s.id) }}" style="display:inline">
-                                <button type="submit" class="btn-sm btn-sm-outline">
+                                <button type="submit" class="btn-sm btn-sm-outline danger">
                                     {{ "Reinstate" if s.is_blacklisted else "Blacklist" }}
                                 </button>
                             </form>

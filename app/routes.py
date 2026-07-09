@@ -89,7 +89,7 @@ def register():
             errors.append("Full name is required.")
         if not name or len(name) < 3:
             errors.append("Username must be at least 3 characters.")
-        if not email or "@" not in email:
+        if not email or ("@" not in email and "." not in email):
             errors.append("A valid email is required.")
         if len(password) < 6:
             errors.append("Password must be at least 6 characters.")
@@ -163,7 +163,12 @@ def admin_treks():
 
     query = Treks.query
     if q:
-        query = query.filter(db.or_(Treks.name.ilike(f"%{q}%"), Treks.location.ilike(f"%{q}%")))
+        filters = [Treks.name.ilike(f"%{q}%"), Treks.location.ilike(f"%{q}%")]
+        if q.isdigit():
+            filters.append(Treks.id==int(q))
+        # query = query.filter(db.or_(Treks.name.ilike(f"%{q}%"), Treks.location.ilike(f"%{q}%")))
+        query = query.filter(db.or_(*filters))
+
     if difficulty:
         query = query.filter_by(difficulty=difficulty)
     if status:
@@ -284,7 +289,11 @@ def admin_staff_list():
     q = request.args.get("q", "")
     query = User.query.filter_by(role="staff")
     if q:
-        query = query.filter(db.or_(User.name.ilike(f"%{q}%"), User.full_name.ilike(f"%{q}%")))
+        filters = [User.full_name.ilike(f"%{q}%")]
+        if q.isdigit():
+            filters.append(User.id==int(q))
+        # query = query.filter(db.or_(User.name.ilike(f"%{q}%"), User.full_name.ilike(f"%{q}%")))
+        query = query.filter(db.or_(*filters))
     staff = query.order_by(User.created_at.desc()).all()
     return render_template("admin/staff_list.html", staff=staff, query=q)
 
@@ -318,7 +327,10 @@ def admin_users():
     q = request.args.get("q", "")
     query = User.query.filter_by(role="trekker")
     if q:
-        query = query.filter(db.or_(User.name.ilike(f"%{q}%"), User.full_name.ilike(f"%{q}%")))
+        filters =[User.full_name.ilike(f"%{q}%")]
+        if q.isdigit():
+            filters.append(User.id==int(q))
+        query = query.filter(db.or_(*filters))
     users = query.order_by(User.created_at.desc()).all()
     return render_template("admin/users.html", users=users, query=q)
 
@@ -338,7 +350,12 @@ def admin_blacklist_user(user_id):
 @login_required
 @admin_required
 def admin_bookings():
-    bookings = Bookings.query.order_by(Bookings.booked_at.desc()).all()
+    # search in bookings
+    q = request.args.get("id","")
+    if q:
+        bookings = Bookings.query.filter(Bookings.id==q)
+    else:
+        bookings = Bookings.query.order_by(Bookings.booked_at.desc()).all()
     return render_template("admin/bookings.html", bookings=bookings)
 
 

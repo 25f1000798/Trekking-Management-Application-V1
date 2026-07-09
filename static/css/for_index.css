@@ -251,11 +251,12 @@
   letter-spacing: 0.3px;
   padding: 13px;
   border-radius: 8px;
-  transition: background 0.2s;
+  transition: all 0.35s ease;
 }
 
 .trek-card-cta:hover {
   background: #ddd2ba;
+  box-shadow: 1px 1px #d2b983;
 }
 
 @media (max-width: 900px) {

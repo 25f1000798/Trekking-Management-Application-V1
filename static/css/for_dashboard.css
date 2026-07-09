@@ -113,8 +113,22 @@ a {
     margin-bottom: 18px;
 }
 
+.sq-card th{
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.sq-card tr{
+    transition: all 0.35s ease;
+}
+
+.sq-card td{
+    text-align: center;
+}
+
 .sq-card tr:hover{
     background-color: white;
+    font-size: 1rem;
 }
 
 /* ---------- Search / filter bar ---------- */
@@ -149,7 +163,7 @@ a {
 
 .manage-card {
     background: whitesmoke;
-    border: 1px solid white;
+    border: 2px solid white;
     border-radius: 10px;
     padding: 20px;
     display: grid;
@@ -257,4 +271,15 @@ a {
     background-color: #4a7c59;
     /* green on hover */
     color: whitesmoke;
+}
+
+/* danger */
+.danger{
+    transition: all 0.35s ease;
+}
+
+.danger:hover{
+    background-color: rgb(252, 69, 69);
+    color: whitesmoke;
+
 }
