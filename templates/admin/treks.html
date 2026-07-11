@@ -60,7 +60,7 @@
 
                 {% if trek.status == 'Pending' %}
                 <form method="post" action="{{ url_for('visit.admin_approve_trek', trek_id=trek.id) }}">
-                    <button type="submit" class="btn-sm btn-sm-success">Approve</button>
+                    <button type="submit" class="btn-sm btn-sm-success manipulation-btn approve">Approve</button>
                 </form>
                 {% endif %}
 

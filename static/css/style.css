@@ -207,6 +207,7 @@ a {
 .flash-stack {
     max-width: 900px;
     margin: 92px auto 0;
+    margin-bottom: 5px;
     padding: 0 24px;
     display: flex;
     flex-direction: column;

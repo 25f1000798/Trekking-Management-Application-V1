@@ -38,11 +38,11 @@
                         <td class="muted">{{ format_date(s.created_at) }}</td>
                         <td>
                             <form method="post" action="{{ url_for('visit.admin_approve_staff', user_id=s.id) }}" style="display:inline">
-                                <button type="submit" class="btn-sm btn-sm-success">Approve</button>
+                                <button type="submit" class="btn-sm btn-sm-success manipulation-btn approve">Approve</button>
                             </form>
                             <form method="post" action="{{ url_for('visit.admin_reject_staff', user_id=s.id) }}" style="display:inline"
                                 data-confirm="Reject and remove this staff registration?">
-                                <button type="submit" class="btn-sm btn-sm-danger">Reject</button>
+                                <button type="submit" class="btn-sm btn-sm-danger danger">Reject</button>
                             </form>
                         </td>
                     </tr>

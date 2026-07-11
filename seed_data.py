@@ -84,7 +84,7 @@ def seed():
                 user.set_pass_hash("123456")
                 db.session.add(user)
                 db.session.commit()
-                print(f"Created staff: {s['name']}")
+                # print(f"Created staff: {s['name']}")
             staff_users.append(user)
 
         trekkers = []
@@ -96,7 +96,7 @@ def seed():
                 user.set_pass_hash("123456")
                 db.session.add(user)
                 db.session.commit()
-                print(f"Created user: {u['name']}")
+                # print(f"Created user: {u['name']}")
             trekkers.append(user)
 
         treks = []
@@ -114,7 +114,7 @@ def seed():
                 )
                 db.session.add(trek)
                 db.session.commit()
-                print(f"Created trek: {t['name']}")
+                # print(f"Created trek: {t['name']}")
             treks.append(trek)
 
         sample_bookings = [

@@ -1,6 +1,7 @@
 .env
 venv/
 __pycache__/
+instance/app.db
 # we do not add virtual environment to github
 
 .vscode/

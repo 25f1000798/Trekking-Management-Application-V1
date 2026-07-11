@@ -263,14 +263,19 @@ a {
 
 /* ----------------- Button hover */
 .manipulation-btn {
-    background-color: whitesmoke;
-    transition: background-color 0.8s ease;
+    background-color: white;
+    transition: all 0.8s ease;
 }
 
 .manipulation-btn:hover {
-    background-color: #4a7c59;
+    background-color: #4cc771;
     /* green on hover */
+    transform: translate(0px,-3px);
     color: whitesmoke;
+}
+
+.approve{
+    background-color: #abf8c2;
 }
 
 /* danger */
@@ -280,6 +285,7 @@ a {
 
 .danger:hover{
     background-color: rgb(252, 69, 69);
+    transform: translate(0px,-3px);
     color: whitesmoke;
 
 }
