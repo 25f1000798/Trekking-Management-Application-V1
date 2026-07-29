@@ -10,7 +10,7 @@
 
 <div class="page-body">
     <div class="sq-card" style="max-width: 600px; margin: 0 auto;">
-        <form method="post">
+        <form method="post" data-confirm="Save Changes?">
             <div class="field">
                 <label>Full Name</label>
                 <input type="text" name="full_name" value="{{ user.full_name }}" required>
@@ -32,6 +32,9 @@
                 <textarea name="bio" rows="3">{{ user.bio or '' }}</textarea>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Save Changes</button>
+        </form>
+        <form action="{{ url_for("visit.user_delete_profile", id = user.id) }}" method="post" data-confirm="Delete this account? This changes not be undone!">
+            <button type="submit" class="btn-sm btn-sm-outline danger" style="width: 100%; margin-top: 2vh; font-size: 1.1em; border: 1px solid black;">Delete</button>
         </form>
     </div>
 </div>

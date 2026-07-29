@@ -116,7 +116,9 @@ def register():
         db.session.commit()
 
         if role == "trekker":
-            flash("Registration successful! Please log in.", "success")
+            flash("Registration successful! Redirecting to dashboard.", "success")
+            load_session(new_user)
+            return redirect(url_for("visit.user_dashboard"))
         else:
             flash("Registered! Your staff account is awaiting admin approval.", "info")
         return redirect(url_for("visit.login"))
@@ -319,6 +321,20 @@ def admin_reject_staff(user_id):
     flash("Staff registration rejected.", "info")
     return redirect(url_for("visit.admin_staff_list"))
 
+@visit.route("/admin/staff/<int:staff_id>/delete", methods=["POST"])
+@login_required
+@admin_required
+def admin_delete_staff(staff_id):
+    staff = User.query.get(staff_id)
+    if staff and staff.role =="staff":
+        db.session.delete(staff)
+        db.session.commit()
+        flash(f"Staff member {staff.full_name} got deleted.","success")
+    elif staff.role != "staff":
+        flash(f"{staff.full_name} is not staff member!!")
+    else:
+        flash("No such staff exist!!","danger")
+    return redirect(url_for("visit.admin_staff_list"))
 
 @visit.route("/admin/users")
 @login_required
@@ -345,6 +361,18 @@ def admin_blacklist_user(user_id):
     flash(f"User {'blacklisted' if user.is_blacklisted else 'reinstated'}.", "success")
     return redirect(request.referrer or url_for("visit.admin_users"))
 
+@visit.route("/admin/users/<int:user_id>/delete", methods=["POST"])
+@login_required
+@admin_required
+def admin_delete_user(user_id):
+    user = User.query.get(user_id)
+    if user:
+        db.session.delete(user)
+        flash(f"User {user.full_name} got deleted!!","success")
+        db.session.commit()
+    else:
+        flash("No such user exists!!")
+    return redirect(url_for("visit.admin_users"))
 
 @visit.route("/admin/bookings")
 @login_required
@@ -414,7 +442,7 @@ def user_dashboard():
         return redirect(url_for("visit.staff_dashboard"))
 
     uid = session["user_id"]
-    open_treks = Treks.query.filter_by(status="Open").order_by(Treks.starting_date).limit(4).all()
+    open_treks = Treks.query.filter_by(status="Open").order_by(Treks.starting_date).limit(3).all()
     my_bookings = Bookings.query.filter_by(user_id=uid).order_by(Bookings.booked_at.desc()).limit(5).all()
     total_booked = Bookings.query.filter_by(user_id=uid, status="Booked").count()
     total_completed = Bookings.query.filter_by(user_id=uid, status="Completed").count()
@@ -558,3 +586,16 @@ def profile():
         return redirect(url_for("visit.profile"))
 
     return render_template("user/profile.html", user=user)
+
+@visit.route("/user/profile/<int:id>/delete", methods=["POST"])
+@login_required
+def user_delete_profile(id):
+    user = User.query.get(id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+    else:
+        flash("No such profile exists!!","warning")
+    session.clear()
+    flash("Account deleted Successfully!! Redirecting to Home","danger")
+    return redirect(url_for("visit.home"))

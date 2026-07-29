@@ -1,8 +1,5 @@
 from datetime import datetime
-from app import create_app
 from app.models import db, User, Treks, Bookings
-
-app = create_app()
 
 TREKS = [
     {
@@ -73,7 +70,7 @@ USERS = [
 ]
 
 
-def seed():
+def seed(app):
     with app.app_context():
         staff_users = []
         for s in STAFF:
@@ -133,12 +130,13 @@ def seed():
                 db.session.commit()
                 print(f"Created booking: {user.name} -> {trek.name}")
 
-        print("\nLogin credentials:")
-        for s in STAFF:
-            print(f"  Staff : {s['email']} / 123456")
-        for u in USERS:
-            print(f"  User  : {u['email']} / 123456")
+#         print("\nLogin credentials:")
+#         for s in STAFF:
+#             print(f"  Staff : {s['email']} / 123456")
+#         for u in USERS:
+#             print(f"  User  : {u['email']} / 123456")
 
 
-if __name__ == "__main__":
-    seed()
+## ============ Now executing in init itself
+# if __name__ == "__main__":
+#     seed()

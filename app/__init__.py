@@ -1,5 +1,6 @@
 import os
 
+from seed_data import seed
 from flask import Flask, render_template
 from config import Config
 from app.models import db, User
@@ -44,6 +45,8 @@ def create_app():
 
         db.create_all()
         _seed_admin(app)
+        # seed data implicitly
+        seed(app)
 
     return app
 
