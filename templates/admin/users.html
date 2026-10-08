@@ -28,7 +28,7 @@
                 <tbody>
                     {% for u in users %}
                     <tr>
-                        <td>user_{{u.id}}</td>
+                        <td title="Visit {{u.full_name}}'s profile ?">user_{{u.id}}</td>
                         <td>{{ u.full_name }}</td>
                         <td>{{ u.email }}</td>
                         <td class="numbers">{{ u.contact or "—" }}</td>
